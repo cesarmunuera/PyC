@@ -5,22 +5,20 @@ setenv('ROS_IP','172.22.33.17')
 rosshutdown
 rosinit % Inicialización de ROS
 %% DECLARACIÓN DE SUBSCRIBERS
-odom=rossubscriber('/robot0/odom'); % Subscripción a la odometría
+odom_sub=rossubscriber('/robot0/odom'); % Subscripción a la odometría
 %% Nos aseguramos recibir un mensaje relacionado con el robot "robot0"
-while (strcmp(odom.LatestMessage.ChildFrameId,'robot0')~=1)
- odom.LatestMessage
-end
+odom = receive(odom_sub, 10)
+odom
+
 %% Obtenemos la posición actual
-pos=odom.LatestMessage.Pose.Pose.Position;
+pos=odom.Pose.Pose.Position;
 
 %% DECLARACIÓN DE PUBLISHERS
 pub = rospublisher('/robot0/cmd_vel', 'geometry_msgs/Twist');
 %% GENERACIÓN DE MENSAJE
-msg=rosmessage(pub) %% Creamos un mensaje del tipo declarado en "pub"
-(geometry_msgs/Twist)
+msg=rosmessage(pub) %% Creamos un mensaje del tipo declarado en "pub"(geometry_msgs/Twist)
 % Rellenamos los campos del mensaje para que el robot avance a 0.2 m/s
-% Velocidades lineales en x,y y z (velocidades en y o z no se usan en
-robots diferenciales y entornos 2D)
+% Velocidades lineales en x,y y z (velocidades en y o z no se usan enrobots diferenciales y entornos 2D)
 msg.Linear.X=0.2;
 msg.Linear.Y=0;
 msg.Linear.Z=0;
