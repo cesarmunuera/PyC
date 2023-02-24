@@ -23,14 +23,9 @@ sonar3 = receive(sonar_sub3, 10)
 
 %% Obtenemos la posición actual
 s0 = sonar0.Range_;
-s1 = sonar1.Range_;
-s2 = sonar2.Range_;
-s3 = sonar3.Range_;
-
-fprintf('El valor de sensor0 s0 es: %d\n', s0)
-fprintf('El valor de sensor1 s1 es: %d\n', s1)
-fprintf('El valor de sensor2 s2 es: %d\n', s2)
-fprintf('El valor de sensor3 s3 es: %d\n', s3)
+s1 = sonar1.Range_
+s2 = sonar2.Range_
+s3 = sonar3.Range_
 
 %% DECLARACIÓN DE PUBLISHERS
 pub = rospublisher('/robot0/cmd_vel', 'geometry_msgs/Twist');
