@@ -1,7 +1,7 @@
 %% INICIALIZACIÓN DE ROS
 % Se definen las variables de entorno ROS_MASTER_URI (ip del Master) y ROS_IP (IP de la máquina donde se ejecuta Matlab). Si se está conectado a la misma red, la variable ROS_IP no es necesario definirla.
-setenv('ROS_MASTER_URI','http://172.29.29.65:11311')
-setenv('ROS_IP','172.29.29.55')
+setenv('ROS_MASTER_URI','http://172.22.74.54:11311')
+setenv('ROS_IP','172.22.5.50')
 rosshutdown
 rosinit % Inicialización de ROS
 
@@ -19,7 +19,7 @@ pub = rospublisher('/robot0/cmd_vel', 'geometry_msgs/Twist');
 %% GENERACIÓN DE MENSAJE
 msg=rosmessage(pub) %% Creamos un mensaje del tipo declarado en "pub"(geometry_msgs/Twist)
 % Velocidades lineales en x,y y z (velocidades en y o z no se usan enrobots diferenciales y entornos 2D)
-msg.Linear.X=0.3;
+msg.Linear.X=0.1;
 msg.Linear.Y=0;
 msg.Linear.Z=0;
 % Velocidades angulares (en robots diferenciales y entornos 2D solo seutilizará el valor Z)
@@ -62,7 +62,7 @@ while (contador < 1002)
     arrayY(contador) = s0;
     arrayX(contador) = contador;
 
-    contador = contador + 1;
+    contador = contador + 1
 
     waitfor(r);
 end
