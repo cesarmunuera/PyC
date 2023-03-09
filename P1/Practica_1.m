@@ -33,12 +33,10 @@ send(pub,msg);
 r = robotics.Rate(10);
 
 %% Variables
-vAnt = 0;
-vMax = 0;
-vAux = 0;
-vNuevo = 0;
-contador = 0;
+contador = 1;
 continuar = true;
+arrayX = [];
+arrayY = []; 
 
 odom = receive(odom_sub, 10);
 odom.Pose.Pose.Position.X
@@ -46,49 +44,33 @@ odom.Pose.Pose.Position.Y
 
 %% Bucle de control infinito
 while (continuar)
-
     sonar0 = receive(sonar_sub0, 10);
-    sonar1 = receive(sonar_sub1, 10);
-    sonar2 = receive(sonar_sub2, 10);
-    sonar3 = receive(sonar_sub3, 10);
-
     s0 = sonar0.Range_;
-    s1 = sonar1.Range_;
-    s2 = sonar2.Range_;
-    s3 = sonar3.Range_;
 
     if ((s0 >= 1.8) && (s0 <= 2.2))
         continuar = false;
         sensor = "s0";
     end
 
-    if ((s1 >= 1.8) && (s1 <= 2.2))
-        continuar = false;
-        sensor = "s1";
-    end
+    waitfor(r);
+end
 
-    if ((s2 >= 1.8) && (s2 <= 2.2))
-        continuar = false;
-        sensor = "s2";
-    end
+while (contador < 1002)
+    sonar0 = receive(sonar_sub0, 10);
+    s0 = sonar0.Range_;
 
-    if ((s3 >= 1.8) && (s3 <= 2.2))
-        continuar = false;
-        sensor = "s3";
-    end
+    arrayY(contador) = s0;
+    arrayX(contador) = contador;
+
+    contador = contador + 1;
 
     waitfor(r);
 end
 
-msg.Linear.X=0;
+msg.Angular.X=0;
 send(pub,msg);
 
-odom = receive(odom_sub, 10);
-odom.Pose.Pose.Position.X
-odom.Pose.Pose.Position.Y
-sensor
-
-fprintf('El valor de sensor0 s0 es: %d\n', s0)
-fprintf('El valor de sensor1 s1 es: %d\n', s1)
-fprintf('El valor de sensor2 s2 es: %d\n', s2)
-fprintf('El valor de sensor3 s3 es: %d\n', s3)
+plot(arrayX, arrayY)
+title('Ejercicio 4.3')
+xlabel('Numero de muestras')
+ylabel('Distancia')
