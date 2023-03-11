@@ -1,16 +1,12 @@
 %% INICIALIZACIÓN DE ROS
 % Se definen las variables de entorno ROS_MASTER_URI (ip del Master) y ROS_IP (IP de la máquina donde se ejecuta Matlab). Si se está conectado a la misma red, la variable ROS_IP no es necesario definirla.
-setenv('ROS_MASTER_URI','http://172.22.74.54:11311')
-setenv('ROS_IP','172.22.5.50')
+setenv('ROS_MASTER_URI','http://192.168.1.4:11311')
+setenv('ROS_IP','192.168.1.5')
 rosshutdown
 rosinit % Inicialización de ROS
 
 %% DECLARACIÓN DE SUBSCRIBERS
 sonar_sub0=rossubscriber('/robot0/sonar_0'); % Subscripción a la odometría
-sonar_sub1=rossubscriber('/robot0/sonar_1');
-sonar_sub2=rossubscriber('/robot0/sonar_2');
-sonar_sub3=rossubscriber('/robot0/sonar_3');
-
 odom_sub=rossubscriber('/robot0/odom');
 
 %% DECLARACIÓN DE PUBLISHERS
@@ -35,12 +31,7 @@ r = robotics.Rate(10);
 %% Variables
 contador = 1;
 continuar = true;
-arrayX = [];
-arrayY = []; 
-
-odom = receive(odom_sub, 10);
-odom.Pose.Pose.Position.X
-odom.Pose.Pose.Position.Y
+array = [];
 
 %% Bucle de control infinito
 while (continuar)
@@ -59,9 +50,7 @@ while (contador < 1002)
     sonar0 = receive(sonar_sub0, 10);
     s0 = sonar0.Range_;
 
-    arrayY(contador) = s0;
-    arrayX(contador) = contador;
-
+    array(contador) = s0;
     contador = contador + 1
 
     waitfor(r);
@@ -70,7 +59,7 @@ end
 msg.Angular.X=0;
 send(pub,msg);
 
-plot(arrayX, arrayY)
+plot(array)
 title('Ejercicio 4.3')
 xlabel('Numero de muestras')
 ylabel('Distancia')
