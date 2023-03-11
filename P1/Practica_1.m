@@ -7,6 +7,10 @@ rosinit % Inicialización de ROS
 
 %% DECLARACIÓN DE SUBSCRIBERS
 sonar_sub0=rossubscriber('/robot0/sonar_0'); % Subscripción a la odometría
+sonar_sub1=rossubscriber('/robot0/sonar_1');
+sonar_sub2=rossubscriber('/robot0/sonar_2');
+sonar_sub3=rossubscriber('/robot0/sonar_3');
+
 odom_sub=rossubscriber('/robot0/odom');
 
 %% DECLARACIÓN DE PUBLISHERS
@@ -15,7 +19,7 @@ pub = rospublisher('/robot0/cmd_vel', 'geometry_msgs/Twist');
 %% GENERACIÓN DE MENSAJE
 msg=rosmessage(pub) %% Creamos un mensaje del tipo declarado en "pub"(geometry_msgs/Twist)
 % Velocidades lineales en x,y y z (velocidades en y o z no se usan enrobots diferenciales y entornos 2D)
-msg.Linear.X=0.1;
+msg.Linear.X=0;
 msg.Linear.Y=0;
 msg.Linear.Z=0;
 % Velocidades angulares (en robots diferenciales y entornos 2D solo seutilizará el valor Z)
@@ -32,34 +36,20 @@ r = robotics.Rate(10);
 contador = 1;
 continuar = true;
 array = [];
+fArray = [];
 
-%% Bucle de control infinito
+sonar0 = receive(sonar_sub0, 10);
+sonar1 = receive(sonar_sub1, 10);
+sonar2 = receive(sonar_sub2, 10);
+sonar3 = receive(sonar_sub3, 10);
+
+s0 = sonar0.Range_
+s1 = sonar1.Range_
+s2 = sonar2.Range_
+s3 = sonar3.Range_
+
+%% Comienza el programa
 while (continuar)
-    sonar0 = receive(sonar_sub0, 10);
-    s0 = sonar0.Range_;
-
-    if ((s0 >= 1.8) && (s0 <= 2.2))
-        continuar = false;
-        sensor = "s0";
-    end
-
     waitfor(r);
 end
 
-while (contador < 1002)
-    sonar0 = receive(sonar_sub0, 10);
-    s0 = sonar0.Range_;
-
-    array(contador) = s0;
-    contador = contador + 1
-
-    waitfor(r);
-end
-
-msg.Angular.X=0;
-send(pub,msg);
-
-plot(array)
-title('Ejercicio 4.3')
-xlabel('Numero de muestras')
-ylabel('Distancia')
