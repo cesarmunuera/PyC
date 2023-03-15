@@ -10,6 +10,7 @@ sonar_sub0=rossubscriber('/robot0/sonar_0'); % Subscripción a la odometría
 sonar_sub1=rossubscriber('/robot0/sonar_1');
 sonar_sub2=rossubscriber('/robot0/sonar_2');
 sonar_sub3=rossubscriber('/robot0/sonar_3');
+sonar_sub4=rossubscriber('/robot0/sonar_4');
 
 odom_sub=rossubscriber('/robot0/odom');
 
@@ -35,57 +36,53 @@ r = robotics.Rate(10);
 %% Variables
 
 %% Comienza el programa
-while (continuar)
+while (1)
 
     sonar0 = receive(sonar_sub0, 10);
     sonar1 = receive(sonar_sub1, 10);
     sonar2 = receive(sonar_sub2, 10);
     sonar3 = receive(sonar_sub3, 10);
+    sonar4 = receive(sonar_sub4, 10);
 
-    if sonar0.Range_ < 3 && sonar1.Range_ > 3 && sonar2.Range_ > 3 && sonar3.Range_ > 3
+    if (sonar3.Range_ < 3 || sonar4.Range_ < 3)
+        sonarTrasero = 2;
+    else
+        sonarTrasero = 4;
+    end
+
+    if (sonar0.Range_ < 3 && sonar1.Range_ > 3 && sonar2.Range_ > 3 && sonarTrasero > 3)
         disp('1');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ > 3 && sonar2.Range_ < 3 && sonar3.Range_ > 3)
+    elseif (sonar0.Range_ > 3 && sonar1.Range_ > 3 && sonar2.Range_ < 3 && sonarTrasero > 3)
         disp('2');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ > 3 && sonar2.Range_ > 3 && sonar3.Range_ < 3)
+    elseif (sonar0.Range_ > 3 && sonar1.Range_ > 3 && sonar2.Range_ > 3 && sonarTrasero < 3)
         disp('3');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ < 3 && sonar2.Range_ > 3 && sonar3.Range_ > 3)
+    elseif (sonar0.Range_ > 3 && sonar1.Range_ < 3 && sonar2.Range_ > 3 && sonarTrasero > 3)
         disp('4');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ > 3 && sonar2.Range_ < 3 && sonar3.Range_ > 3)
-        disp('5 dobles');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ > 3 && sonar2.Range_ > 3 && sonar3.Range_ < 3)
-        disp('6 dobles');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ < 3 && sonar2.Range_ > 3 && sonar3.Range_ > 3)
-        disp('7 dobles');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ > 3 && sonar2.Range_ < 3 && sonar3.Range_ < 3)
-        disp('8 dobles');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ < 3 && sonar2.Range_ < 3 && sonar3.Range_ > 3)
-        disp('9 dobles');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ < 3 && sonar2.Range_ > 3 && sonar3.Range_ < 3)
-        disp('10 dobles');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ > 3 && sonar2.Range_ < 3 && sonar3.Range_ < 3)
+    elseif (sonar0.Range_ < 3 && sonar1.Range_ > 3 && sonar2.Range_ < 3 && sonarTrasero > 3)
+        disp('5');
+    elseif (sonar0.Range_ < 3 && sonar1.Range_ > 3 && sonar2.Range_ > 3 && sonarTrasero < 3)
+        disp('6');
+    elseif (sonar0.Range_ < 3 && sonar1.Range_ < 3 && sonar2.Range_ > 3 && sonarTrasero > 3)
+        disp('7');
+    elseif (sonar0.Range_ > 3 && sonar1.Range_ > 3 && sonar2.Range_ < 3 && sonarTrasero < 3)
+        disp('8');
+    elseif (sonar0.Range_ > 3 && sonar1.Range_ < 3 && sonar2.Range_ < 3 && sonarTrasero > 3)
+        disp('9');
+    elseif (sonar0.Range_ > 3 && sonar1.Range_ < 3 && sonar2.Range_ > 3 && sonarTrasero < 3)
+        disp('10');
+    elseif (sonar0.Range_ < 3 && sonar1.Range_ > 3 && sonar2.Range_ < 3 && sonarTrasero < 3)
         disp('11');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ < 3 && sonar2.Range_ < 3 && sonar3.Range_ < 3)
+    elseif (sonar0.Range_ > 3 && sonar1.Range_ < 3 && sonar2.Range_ < 3 && sonarTrasero < 3)
         disp('12');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ < 3 && sonar2.Range_ > 3 && sonar3.Range_ < 3)
+    elseif (sonar0.Range_ < 3 && sonar1.Range_ < 3 && sonar2.Range_ > 3 && sonarTrasero < 3)
         disp('13');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ < 3 && sonar2.Range_ < 3 && sonar3.Range_ > 3)
+    elseif (sonar0.Range_ < 3 && sonar1.Range_ < 3 && sonar2.Range_ < 3 && sonarTrasero > 3)
         disp('14');
     elseif (sonar0.Range_ < 3 && sonar1.Range_ < 3 && sonar2.Range_ < 3 && sonar1.Range_ < 3)
         disp('15');
     else
         disp('0');
     end
-
-    if sonar0.Range_ > 3
-        if sonar1.Range_ > 3
-            if sonar2.Range_ > 3
-                if sonar3.Range_ > 3
-                    disp('0')
-                elseif
-                    disp('3')
-            elseif
-        elseif
-    elseif
 
     waitfor(r);
 end
