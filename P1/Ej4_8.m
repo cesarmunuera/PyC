@@ -5,6 +5,15 @@ setenv('ROS_IP','192.168.1.5')
 rosshutdown
 rosinit % Inicialización de ROS
 
+%% activamos los motores
+pub_motor = rospublisher('/cmd_motor_state', 'std_msgs/Int32');
+msg_motor = rosmessage(pub_motor);
+msg_motor.Data = 1;
+send(pub_motor,msg_motor)
+
+%% DECLARACIÓN DE SUBSCRIBERS
+odom_sub=rossubscriber('/pose'); % Subscripción a la odometría
+
 %% DECLARACIÓN DE SUBSCRIBERS
 sonar_sub0=rossubscriber('/robot0/sonar_0'); % Subscripción a la odometría
 sonar_sub1=rossubscriber('/robot0/sonar_1');
@@ -15,7 +24,7 @@ sonar_sub4=rossubscriber('/robot0/sonar_4');
 odom_sub=rossubscriber('/robot0/odom');
 
 %% DECLARACIÓN DE PUBLISHERS
-pub = rospublisher('/robot0/cmd_vel', 'geometry_msgs/Twist');
+pub = rospublisher('/cmd_vel', 'geometry_msgs/Twist');
 
 %% GENERACIÓN DE MENSAJE
 msg=rosmessage(pub) %% Creamos un mensaje del tipo declarado en "pub"(geometry_msgs/Twist)
