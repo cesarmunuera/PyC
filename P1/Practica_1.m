@@ -7,11 +7,6 @@ rosinit % Inicialización de ROS
 
 %% DECLARACIÓN DE SUBSCRIBERS
 sonar_sub0=rossubscriber('/robot0/sonar_0'); % Subscripción a la odometría
-sonar_sub1=rossubscriber('/robot0/sonar_1');
-sonar_sub2=rossubscriber('/robot0/sonar_2');
-sonar_sub3=rossubscriber('/robot0/sonar_3');
-sonar_sub4=rossubscriber('/robot0/sonar_4');
-
 odom_sub=rossubscriber('/robot0/odom');
 
 %% DECLARACIÓN DE PUBLISHERS
@@ -34,55 +29,42 @@ send(pub,msg);
 r = robotics.Rate(10);
 
 %% Variables
+contador = 1;
+continuar = true;
+array = [];
+arrayFiltrado = [];
 
-%% Comienza el programa
-while (1)
-
+%% Bucle de control infinito
+while (continuar)
     sonar0 = receive(sonar_sub0, 10);
-    sonar1 = receive(sonar_sub1, 10);
-    sonar2 = receive(sonar_sub2, 10);
-    sonar3 = receive(sonar_sub3, 10);
-    sonar4 = receive(sonar_sub4, 10);
+    s0 = sonar0.Range_;
 
-    if (sonar3.Range_ < 3 || sonar4.Range_ < 3)
-        sonarTrasero = 2;
-    else
-        sonarTrasero = 4;
-    end
-
-    if (sonar0.Range_ < 3 && sonar1.Range_ > 3 && sonar2.Range_ > 3 && sonarTrasero > 3)
-        disp('1');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ > 3 && sonar2.Range_ < 3 && sonarTrasero > 3)
-        disp('2');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ > 3 && sonar2.Range_ > 3 && sonarTrasero < 3)
-        disp('3');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ < 3 && sonar2.Range_ > 3 && sonarTrasero > 3)
-        disp('4');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ > 3 && sonar2.Range_ < 3 && sonarTrasero > 3)
-        disp('5');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ > 3 && sonar2.Range_ > 3 && sonarTrasero < 3)
-        disp('6');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ < 3 && sonar2.Range_ > 3 && sonarTrasero > 3)
-        disp('7');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ > 3 && sonar2.Range_ < 3 && sonarTrasero < 3)
-        disp('8');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ < 3 && sonar2.Range_ < 3 && sonarTrasero > 3)
-        disp('9');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ < 3 && sonar2.Range_ > 3 && sonarTrasero < 3)
-        disp('10');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ > 3 && sonar2.Range_ < 3 && sonarTrasero < 3)
-        disp('11');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ < 3 && sonar2.Range_ < 3 && sonarTrasero < 3)
-        disp('12');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ < 3 && sonar2.Range_ > 3 && sonarTrasero < 3)
-        disp('13');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ < 3 && sonar2.Range_ < 3 && sonarTrasero > 3)
-        disp('14');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ < 3 && sonar2.Range_ < 3 && sonar1.Range_ < 3)
-        disp('15');
-    else
-        disp('0');
+    if ((s0 >= 1.8) && (s0 <= 2.2))
+        continuar = false;
+        sensor = "s0";
     end
 
     waitfor(r);
 end
+
+while (contador < 1002)
+    sonar0 = receive(sonar_sub0, 10);
+    s0 = sonar0.Range_;
+
+    array(contador) = s0;
+    contador = contador + 1
+
+    waitfor(r);
+end
+
+msg.Angular.X=0;
+send(pub,msg);
+
+arrayFiltrado = movmean(array,5); % aplicamos un filtro de media móvil con ventana de longitud 5
+plot(array,'r'); 
+hold on; 
+plot(arrayFiltrado,'b');
+
+title('Ejercicio 4.3')
+xlabel('Numero de muestras')
+ylabel('Distancia')
