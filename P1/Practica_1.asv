@@ -44,31 +44,31 @@ while (continuar)
 
     if sonar0.Range_ < 3 && sonar1.Range_ > 3 && sonar2.Range_ > 3 && sonar3.Range_ > 3
         disp('1');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ > 3 && sonar2.Range_ < 3 && sonar3.Range_ > 3)
+    elseif (sonar0.Range_ > 3 && sonar1.Range_ > 3 && sonar2.Range_ > 3 && sonar3.Range_ > 3)
         disp('2');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ > 3 && sonar2.Range_ > 3 && sonar3.Range_ < 3)
+    elseif (sonar3.Range_ < 3)
         disp('3');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ < 3 && sonar2.Range_ > 3 && sonar3.Range_ > 3)
+    elseif (sonar1.Range_ < 3)
         disp('4');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ > 3 && sonar2.Range_ < 3 && sonar3.Range_ > 3)
+    elseif (sonar0.Range_ < 3 && sonar2.Range_ < 3)
         disp('5 dobles');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ > 3 && sonar2.Range_ > 3 && sonar3.Range_ < 3)
+    elseif (sonar0.Range_ < 3 && sonar3.Range_ < 3)
         disp('6 dobles');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ < 3 && sonar2.Range_ > 3 && sonar3.Range_ > 3)
+    elseif (sonar0.Range_ < 3 && sonar1.Range_ < 3)
         disp('7 dobles');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ > 3 && sonar2.Range_ < 3 && sonar3.Range_ < 3)
+    elseif (sonar2.Range_ < 3 && sonar3.Range_ < 3)
         disp('8 dobles');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ < 3 && sonar2.Range_ < 3 && sonar3.Range_ > 3)
+    elseif (sonar2.Range_ < 3 && sonar1.Range_ < 3)
         disp('9 dobles');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ < 3 && sonar2.Range_ > 3 && sonar3.Range_ < 3)
+    elseif (sonar3.Range_ < 3 && sonar1.Range_ < 3)
         disp('10 dobles');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ > 3 && sonar2.Range_ < 3 && sonar3.Range_ < 3)
+    elseif (sonar0.Range_ < 3 && sonar2.Range_ < 3 && sonar1.Range_ < 3)
         disp('11');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ < 3 && sonar2.Range_ < 3 && sonar3.Range_ < 3)
+    elseif (sonar3.Range_ < 3 && sonar2.Range_ < 3 && sonar1.Range_ < 3)
         disp('12');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ < 3 && sonar2.Range_ > 3 && sonar3.Range_ < 3)
+    elseif (sonar3.Range_ < 3 && sonar0.Range_ < 3 && sonar1.Range_ < 3)
         disp('13');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ < 3 && sonar2.Range_ < 3 && sonar3.Range_ > 3)
+    elseif (sonar1.Range_ < 3 && sonar2.Range_ < 3 && sonar0.Range_ < 3)
         disp('14');
     elseif (sonar0.Range_ < 3 && sonar1.Range_ < 3 && sonar2.Range_ < 3 && sonar1.Range_ < 3)
         disp('15');
