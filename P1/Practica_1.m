@@ -6,11 +6,7 @@ rosshutdown
 rosinit % Inicialización de ROS
 
 %% DECLARACIÓN DE SUBSCRIBERS
-sonar_sub0=rossubscriber('/robot0/sonar_0'); % Subscripción a la odometría
-sonar_sub1=rossubscriber('/robot0/sonar_1');
-sonar_sub2=rossubscriber('/robot0/sonar_2');
-sonar_sub3=rossubscriber('/robot0/sonar_3');
-sonar_sub4=rossubscriber('/robot0/sonar_4');
+odom_sub=rossubscriber('/robot0/odom'); % Subscripción a la odometría
 
 %% DECLARACIÓN DE PUBLISHERS
 pub = rospublisher('/robot0/cmd_vel', 'geometry_msgs/Twist');
@@ -31,43 +27,48 @@ send(pub,msg);
 %% Definimos la perodicidad del bucle (10 hz)
 r = robotics.Rate(10);
 
-%% Variables
-contador = 0;
-c0 = 0;
-c1 = 0;
-c2 = 0;
-ctrasero = 0;
-
-
 %% Comienza el programa
-while (contador < 100)
+while (1)
 
-    sonar0 = receive(sonar_sub0, 10);
-    sonar1 = receive(sonar_sub1, 10);
-    sonar2 = receive(sonar_sub2, 10);
-    sonar3 = receive(sonar_sub3, 10);
-
-    if (sonar0.Range_ < 3)
-        c0 = c0 + 1;
-    end
-
-    if (sonar1.Range_ < 3)
-        c1 = c1 + 1;
-    end
-
-    if (sonar2.Range_ < 3)
-        c2 = c2 + 1;
-    end
-
-    if (sonar3.Range_ < 3 && sonar4.Range_ < 3)
-        ctrasero = ctrasero + 1;
-    end
-
-    contador = contador + 1
     waitfor(r);
 end
 
-disp("La fiabilidad del sonar 0 es del " + c0 + " %.")
-disp("La fiabilidad del sonar 1 es del " + c1 + " %.")
-disp("La fiabilidad del sonar 2 es del " + c2 + " %.")
-disp("La fiabilidad del sonar trasero es del " + ctrasero + " %.")
+%% Creamos una funcion que recibe como parametros los metros que se desea recorrer
+function avanzar(metros)
+%Primero vemos donde se encuentra el robot
+odom = receive(odom_sub, 10);
+pos_X = odom.Pose.Pose.Position.X;
+
+metros_a_recorrer = pos_X + metros;
+
+    %Ahora debe avanzar los metros que se pidan, a partir de esa posición
+    while(pos_X < metros_a_recorrer)
+        msg.Linear.X = 0.2;
+        send(pub,msg);
+        pos_X = odom.Pose.Pose.Position.X;
+    end
+    
+    msg.Linear.X = 0;
+    send(pub,msg);
+
+end
+
+%% Creamos una funcion que recibe como parametros los grados que se desea girar
+function girar(grados)
+%Primero vemos donde se encuentra el robot
+odom = receive(odom_sub, 10);
+pos_Z = odom.Pose.Pose.Orientation.Z;
+
+angulo_a_girar = pos_Z + grados;
+
+    %Ahora debe girar los grados que se pidan, a partir de esa posición
+    while(pos_X < angulo_a_girar)
+        msg.Angular.Z = 0.1;
+        send(pub,msg);
+        pos_Z = odom.Pose.Pose.Orientation.Z;
+    end
+    
+    msg.Angular.Z = 0.2;
+    send(pub,msg);
+
+end
