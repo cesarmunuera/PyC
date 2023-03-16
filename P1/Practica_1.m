@@ -58,17 +58,28 @@ function girar(grados)
 %Primero vemos donde se encuentra el robot
 odom = receive(odom_sub, 10);
 pos_Z = odom.Pose.Pose.Orientation.Z;
-
-angulo_a_girar = pos_Z + grados;
-
+vel = 0.2;
+angulo_a_girar = pos_Z + toNum(grados);
     %Ahora debe girar los grados que se pidan, a partir de esa posición
-    while(pos_X < angulo_a_girar)
-        msg.Angular.Z = 0.1;
+    if(grados < 0)
+        while(pos_Z > angulo_a_girar) 
+        msg.Angular.Z = -vel;
         send(pub,msg);
         pos_Z = odom.Pose.Pose.Orientation.Z;
+        end
+    else
+        while(pos_Z < angulo_a_girar)
+        msg.Angular.Z = vel;
+        send(pub,msg);
+        pos_Z = odom.Pose.Pose.Orientation.Z;
+        end
     end
-    
-    msg.Angular.Z = 0.2;
+    msg.Angular.Z = 0.0;
     send(pub,msg);
 
+end
+
+%% Creamos una funcion que pase de grados al sistema de representacion del robot
+function result = toNum(grados)
+    result = grados / 180;
 end
