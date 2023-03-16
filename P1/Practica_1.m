@@ -12,15 +12,13 @@ sonar_sub2=rossubscriber('/robot0/sonar_2');
 sonar_sub3=rossubscriber('/robot0/sonar_3');
 sonar_sub4=rossubscriber('/robot0/sonar_4');
 
-odom_sub=rossubscriber('/robot0/odom');
-
 %% DECLARACIÓN DE PUBLISHERS
 pub = rospublisher('/robot0/cmd_vel', 'geometry_msgs/Twist');
 
 %% GENERACIÓN DE MENSAJE
 msg=rosmessage(pub) %% Creamos un mensaje del tipo declarado en "pub"(geometry_msgs/Twist)
 % Velocidades lineales en x,y y z (velocidades en y o z no se usan enrobots diferenciales y entornos 2D)
-msg.Linear.X=0.1;
+msg.Linear.X=0;
 msg.Linear.Y=0;
 msg.Linear.Z=0;
 % Velocidades angulares (en robots diferenciales y entornos 2D solo seutilizará el valor Z)
@@ -34,9 +32,15 @@ send(pub,msg);
 r = robotics.Rate(10);
 
 %% Variables
+contador = 0;
+c0 = 0;
+c1 = 0;
+c2 = 0;
+ctrasero = 0;
+
 
 %% Comienza el programa
-while (1)
+while (contador < 100)
 
     sonar0 = receive(sonar_sub0, 10);
     sonar1 = receive(sonar_sub1, 10);
@@ -44,45 +48,27 @@ while (1)
     sonar3 = receive(sonar_sub3, 10);
     sonar4 = receive(sonar_sub4, 10);
 
-    if (sonar3.Range_ < 3 || sonar4.Range_ < 3)
-        sonarTrasero = 2;
-    else
-        sonarTrasero = 4;
+    if (sonar0.Range_ < 3)
+        c0 = c0 + 1;
     end
 
-    if (sonar0.Range_ < 3 && sonar1.Range_ > 3 && sonar2.Range_ > 3 && sonarTrasero > 3)
-        disp('1');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ > 3 && sonar2.Range_ < 3 && sonarTrasero > 3)
-        disp('2');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ > 3 && sonar2.Range_ > 3 && sonarTrasero < 3)
-        disp('3');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ < 3 && sonar2.Range_ > 3 && sonarTrasero > 3)
-        disp('4');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ > 3 && sonar2.Range_ < 3 && sonarTrasero > 3)
-        disp('5');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ > 3 && sonar2.Range_ > 3 && sonarTrasero < 3)
-        disp('6');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ < 3 && sonar2.Range_ > 3 && sonarTrasero > 3)
-        disp('7');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ > 3 && sonar2.Range_ < 3 && sonarTrasero < 3)
-        disp('8');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ < 3 && sonar2.Range_ < 3 && sonarTrasero > 3)
-        disp('9');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ < 3 && sonar2.Range_ > 3 && sonarTrasero < 3)
-        disp('10');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ > 3 && sonar2.Range_ < 3 && sonarTrasero < 3)
-        disp('11');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ < 3 && sonar2.Range_ < 3 && sonarTrasero < 3)
-        disp('12');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ < 3 && sonar2.Range_ > 3 && sonarTrasero < 3)
-        disp('13');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ < 3 && sonar2.Range_ < 3 && sonarTrasero > 3)
-        disp('14');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ < 3 && sonar2.Range_ < 3 && sonar1.Range_ < 3)
-        disp('15');
-    else
-        disp('0');
+    if (sonar1.Range_ < 3)
+        c1 = c1 + 1;
     end
 
+    if (sonar2.Range_ < 3)
+        c2 = c2 + 1;
+    end
+
+    if (sonar3.Range_ < 3 && sonar4.Range_ < 3)
+        ctrasero = ctrasero + 1;
+    end
+
+    contador = contador + 1
     waitfor(r);
 end
+
+disp("La fiabilidad del sonar 0 es del " + c0 + " %.")
+disp("La fiabilidad del sonar 1 es del " + c1 + " %.")
+disp("La fiabilidad del sonar 2 es del " + c2 + " %.")
+disp("La fiabilidad del sonar trasero es del " + ctrasero + " %.")
