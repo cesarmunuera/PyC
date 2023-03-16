@@ -41,6 +41,7 @@ send(pub,msg);
 r = robotics.Rate(10);
 
 %% Variables
+dist = 5.1;
 
 %% Comienza el programa
 while (1)
@@ -54,51 +55,45 @@ while (1)
     sonar6 = receive(sonar6_sub, 10);
     sonar7 = receive(sonar7_sub, 10);
 
-    if (sonar6.Range_ < 5 || sonar7.Range_ < 5)
+    if (sonar6.Range_ < dist || sonar7.Range_ < dist)
         sonarTrasero = 2;
     else
         sonarTrasero = 6;
     end
     % sonar0 = sonar3 sonar1=sonar0 sonar2 = sonar5 sonarTrasero = sonar7 y sonar6 
-    if (sonar3.Range_ < 5 && sonar0.Range_ > 5 && sonar5.Range_ > 5 && sonarTrasero > 5)
+    if (sonar3.Range_ < dist && sonar0.Range_ > dist && sonar5.Range_ > dist && sonarTrasero > dist)
         disp('1');
-    elseif (sonar3.Range_ > 5 && sonar0.Range_ > 5 && sonar5.Range_ < 5 && sonarTrasero > 5)
+    elseif (sonar3.Range_ > dist && sonar0.Range_ > dist && sonar5.Range_ < dist && sonarTrasero > dist)
         disp('2');
-    elseif (sonar3.Range_ > 5 && sonar0.Range_ > 5 && sonar5.Range_ > 5 && sonarTrasero < 5)
+    elseif (sonar3.Range_ > dist && sonar0.Range_ > dist && sonar5.Range_ > dist && sonarTrasero < dist)
         disp('3');
-    elseif (sonar3.Range_ > 5 && sonar0.Range_ < 5 && sonar5.Range_ > 5 && sonarTrasero > 5)
+    elseif (sonar3.Range_ > dist && sonar0.Range_ < dist && sonar5.Range_ > dist && sonarTrasero > dist)
         disp('4');
-    elseif (sonar3.Range_ < 5 && sonar0.Range_ > 5 && sonar5.Range_ < 5 && sonarTrasero > 5)
+    elseif (sonar3.Range_ < dist && sonar0.Range_ > dist && sonar5.Range_ < dist && sonarTrasero > dist)
         disp('5');
-    elseif (sonar3.Range_ < 5 && sonar0.Range_ > 5 && sonar5.Range_ > 5 && sonarTrasero < 5)
+    elseif (sonar3.Range_ < dist && sonar0.Range_ > dist && sonar5.Range_ > dist && sonarTrasero < dist)
         disp('6');
-    elseif (sonar3.Range_ < 5 && sonar0.Range_ < 5 && sonar5.Range_ > 5 && sonarTrasero > 5)
+    elseif (sonar3.Range_ < dist && sonar0.Range_ < dist && sonar5.Range_ > dist && sonarTrasero > dist)
         disp('7');
-    elseif (sonar3.Range_ > 5 && sonar0.Range_ > 5 && sonar5.Range_ < 5 && sonarTrasero < 5)
+    elseif (sonar3.Range_ > dist && sonar0.Range_ > dist && sonar5.Range_ < dist && sonarTrasero < dist)
         disp('8');
-    elseif (sonar3.Range_ > 5 && sonar0.Range_ < 5 && sonar5.Range_ < 5 && sonarTrasero > 5)
+    elseif (sonar3.Range_ > dist && sonar0.Range_ < dist && sonar5.Range_ < dist && sonarTrasero > dist)
         disp('9');
-    elseif (sonar3.Range_ > 5 && sonar0.Range_ < 5 && sonar5.Range_ > 5 && sonarTrasero < 5)
+    elseif (sonar3.Range_ > dist && sonar0.Range_ < dist && sonar5.Range_ > dist && sonarTrasero < dist)
         disp('10');
-    elseif (sonar3.Range_ < 5 && sonar0.Range_ > 5 && sonar5.Range_ < 5 && sonarTrasero < 5)
+    elseif (sonar3.Range_ < dist && sonar0.Range_ > dist && sonar5.Range_ < dist && sonarTrasero < dist)
         disp('11');
-    elseif (sonar3.Range_ > 5 && sonar0.Range_ < 5 && sonar5.Range_ < 5 && sonarTrasero < 5)
+    elseif (sonar3.Range_ > dist && sonar0.Range_ < dist && sonar5.Range_ < dist && sonarTrasero < dist)
         disp('12');
-    elseif (sonar3.Range_ < 5 && sonar0.Range_ < 5 && sonar5.Range_ > 5 && sonarTrasero < 5)
+    elseif (sonar3.Range_ < dist && sonar0.Range_ < dist && sonar5.Range_ > dist && sonarTrasero < dist)
         disp('13');
-    elseif (sonar3.Range_ < 5 && sonar0.Range_ < 5 && sonar5.Range_ < 5 && sonarTrasero > 5)
+    elseif (sonar3.Range_ < dist && sonar0.Range_ < dist && sonar5.Range_ < dist && sonarTrasero > dist)
         disp('14');
-    elseif (sonar3.Range_ < 5 && sonar0.Range_ < 5 && sonar5.Range_ < 5 && sonarTrasero < 5)
+    elseif (sonar3.Range_ < dist && sonar0.Range_ < dist && sonar5.Range_ < dist && sonarTrasero < dist)
         disp('15');
     else
         disp('0');
     end
-
-    pause(5);
-    s3 = sonar3.Range_
-    s0 = sonar0.Range_
-    s5 = sonar5.Range_ 
-    st = sonarTrasero
 
     waitfor(r);
 end
