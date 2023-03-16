@@ -1,27 +1,25 @@
 %% INICIALIZACIÓN DE ROS
 % Se definen las variables de entorno ROS_MASTER_URI (ip del Master) y ROS_IP (IP de la máquina donde se ejecuta Matlab). Si se está conectado a la misma red, la variable ROS_IP no es necesario definirla.
-setenv('ROS_MASTER_URI','http://192.168.1.23:11311')
-setenv('ROS_IP','192.168.1.5')
+setenv('ROS_MASTER_URI','http://172.29.30.175:11311')
+setenv('ROS_IP','172.29.29.51')
 rosshutdown
 rosinit % Inicialización de ROS
 
-%% activamos los motores
+%% Activamos los motores
 pub_motor = rospublisher('/cmd_motor_state', 'std_msgs/Int32');
 msg_motor = rosmessage(pub_motor);
 msg_motor.Data = 1;
 send(pub_motor,msg_motor)
 
 %% DECLARACIÓN DE SUBSCRIBERS
-odom_sub=rossubscriber('/pose'); % Subscripción a la odometría
-
-%% DECLARACIÓN DE SUBSCRIBERS
-sonar_sub0=rossubscriber('/robot0/sonar_0'); % Subscripción a la odometría
-sonar_sub1=rossubscriber('/robot0/sonar_1');
-sonar_sub2=rossubscriber('/robot0/sonar_2');
-sonar_sub3=rossubscriber('/robot0/sonar_3');
-sonar_sub4=rossubscriber('/robot0/sonar_4');
-
-odom_sub=rossubscriber('/robot0/odom');
+sonar0_sub=rossubscriber('/sonar_0');
+sonar1_sub=rossubscriber('/sonar_1');
+sonar2_sub=rossubscriber('/sonar_2');
+sonar3_sub=rossubscriber('/sonar_3');
+sonar4_sub=rossubscriber('/sonar_4');
+sonar5_sub=rossubscriber('/sonar_5');
+sonar6_sub=rossubscriber('/sonar_6');
+sonar7_sub=rossubscriber('/sonar_7');
 
 %% DECLARACIÓN DE PUBLISHERS
 pub = rospublisher('/cmd_vel', 'geometry_msgs/Twist');
@@ -29,7 +27,7 @@ pub = rospublisher('/cmd_vel', 'geometry_msgs/Twist');
 %% GENERACIÓN DE MENSAJE
 msg=rosmessage(pub) %% Creamos un mensaje del tipo declarado en "pub"(geometry_msgs/Twist)
 % Velocidades lineales en x,y y z (velocidades en y o z no se usan enrobots diferenciales y entornos 2D)
-msg.Linear.X=0.1;
+msg.Linear.X=0;
 msg.Linear.Y=0;
 msg.Linear.Z=0;
 % Velocidades angulares (en robots diferenciales y entornos 2D solo seutilizará el valor Z)
@@ -47,51 +45,60 @@ r = robotics.Rate(10);
 %% Comienza el programa
 while (1)
 
-    sonar0 = receive(sonar_sub0, 10);
-    sonar1 = receive(sonar_sub1, 10);
-    sonar2 = receive(sonar_sub2, 10);
-    sonar3 = receive(sonar_sub3, 10);
-    sonar4 = receive(sonar_sub4, 10);
+    sonar0 = receive(sonar0_sub, 10);
+    sonar1 = receive(sonar1_sub, 10);
+    sonar2 = receive(sonar2_sub, 10);
+    sonar3 = receive(sonar3_sub, 10);
+    sonar4 = receive(sonar4_sub, 10);
+    sonar5 = receive(sonar5_sub, 10);
+    sonar6 = receive(sonar6_sub, 10);
+    sonar7 = receive(sonar7_sub, 10);
 
-    if (sonar3.Range_ < 3 || sonar4.Range_ < 3)
+    if (sonar6.Range_ < 5 || sonar7.Range_ < 5)
         sonarTrasero = 2;
     else
-        sonarTrasero = 4;
+        sonarTrasero = 6;
     end
-
-    if (sonar0.Range_ < 3 && sonar1.Range_ > 3 && sonar2.Range_ > 3 && sonarTrasero > 3)
+    % sonar0 = sonar3 sonar1=sonar0 sonar2 = sonar5 sonarTrasero = sonar7 y sonar6 
+    if (sonar3.Range_ < 5 && sonar0.Range_ > 5 && sonar5.Range_ > 5 && sonarTrasero > 5)
         disp('1');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ > 3 && sonar2.Range_ < 3 && sonarTrasero > 3)
+    elseif (sonar3.Range_ > 5 && sonar0.Range_ > 5 && sonar5.Range_ < 5 && sonarTrasero > 5)
         disp('2');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ > 3 && sonar2.Range_ > 3 && sonarTrasero < 3)
+    elseif (sonar3.Range_ > 5 && sonar0.Range_ > 5 && sonar5.Range_ > 5 && sonarTrasero < 5)
         disp('3');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ < 3 && sonar2.Range_ > 3 && sonarTrasero > 3)
+    elseif (sonar3.Range_ > 5 && sonar0.Range_ < 5 && sonar5.Range_ > 5 && sonarTrasero > 5)
         disp('4');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ > 3 && sonar2.Range_ < 3 && sonarTrasero > 3)
+    elseif (sonar3.Range_ < 5 && sonar0.Range_ > 5 && sonar5.Range_ < 5 && sonarTrasero > 5)
         disp('5');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ > 3 && sonar2.Range_ > 3 && sonarTrasero < 3)
+    elseif (sonar3.Range_ < 5 && sonar0.Range_ > 5 && sonar5.Range_ > 5 && sonarTrasero < 5)
         disp('6');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ < 3 && sonar2.Range_ > 3 && sonarTrasero > 3)
+    elseif (sonar3.Range_ < 5 && sonar0.Range_ < 5 && sonar5.Range_ > 5 && sonarTrasero > 5)
         disp('7');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ > 3 && sonar2.Range_ < 3 && sonarTrasero < 3)
+    elseif (sonar3.Range_ > 5 && sonar0.Range_ > 5 && sonar5.Range_ < 5 && sonarTrasero < 5)
         disp('8');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ < 3 && sonar2.Range_ < 3 && sonarTrasero > 3)
+    elseif (sonar3.Range_ > 5 && sonar0.Range_ < 5 && sonar5.Range_ < 5 && sonarTrasero > 5)
         disp('9');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ < 3 && sonar2.Range_ > 3 && sonarTrasero < 3)
+    elseif (sonar3.Range_ > 5 && sonar0.Range_ < 5 && sonar5.Range_ > 5 && sonarTrasero < 5)
         disp('10');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ > 3 && sonar2.Range_ < 3 && sonarTrasero < 3)
+    elseif (sonar3.Range_ < 5 && sonar0.Range_ > 5 && sonar5.Range_ < 5 && sonarTrasero < 5)
         disp('11');
-    elseif (sonar0.Range_ > 3 && sonar1.Range_ < 3 && sonar2.Range_ < 3 && sonarTrasero < 3)
+    elseif (sonar3.Range_ > 5 && sonar0.Range_ < 5 && sonar5.Range_ < 5 && sonarTrasero < 5)
         disp('12');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ < 3 && sonar2.Range_ > 3 && sonarTrasero < 3)
+    elseif (sonar3.Range_ < 5 && sonar0.Range_ < 5 && sonar5.Range_ > 5 && sonarTrasero < 5)
         disp('13');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ < 3 && sonar2.Range_ < 3 && sonarTrasero > 3)
+    elseif (sonar3.Range_ < 5 && sonar0.Range_ < 5 && sonar5.Range_ < 5 && sonarTrasero > 5)
         disp('14');
-    elseif (sonar0.Range_ < 3 && sonar1.Range_ < 3 && sonar2.Range_ < 3 && sonar1.Range_ < 3)
+    elseif (sonar3.Range_ < 5 && sonar0.Range_ < 5 && sonar5.Range_ < 5 && sonarTrasero < 5)
         disp('15');
     else
         disp('0');
     end
+
+    pause(5);
+    s3 = sonar3.Range_
+    s0 = sonar0.Range_
+    s5 = sonar5.Range_ 
+    st = sonarTrasero
 
     waitfor(r);
 end

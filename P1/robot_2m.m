@@ -12,14 +12,8 @@ msg_motor.Data = 1;
 send(pub_motor,msg_motor)
 
 %% DECLARACIÓN DE SUBSCRIBERS
-sonar0_sub=rossubscriber('/sonar_0');
-sonar1_sub=rossubscriber('/sonar_1');
-sonar2_sub=rossubscriber('/sonar_2');
-sonar3_sub=rossubscriber('/sonar_3');
-sonar4_sub=rossubscriber('/sonar_4');
-sonar5_sub=rossubscriber('/sonar_5');
-sonar6_sub=rossubscriber('/sonar_6');
-sonar7_sub=rossubscriber('/sonar_7');
+sonar_sub0=rossubscriber('/sonar_0'); % Subscripción a la odometría
+% Subscripción a sonar ????
 
 %% DECLARACIÓN DE PUBLISHERS
 pub = rospublisher('/cmd_vel', 'geometry_msgs/Twist');
@@ -27,7 +21,7 @@ pub = rospublisher('/cmd_vel', 'geometry_msgs/Twist');
 %% GENERACIÓN DE MENSAJE
 msg=rosmessage(pub) %% Creamos un mensaje del tipo declarado en "pub"(geometry_msgs/Twist)
 % Velocidades lineales en x,y y z (velocidades en y o z no se usan enrobots diferenciales y entornos 2D)
-msg.Linear.X=0;
+msg.Linear.X=0.1;
 msg.Linear.Y=0;
 msg.Linear.Z=0;
 % Velocidades angulares (en robots diferenciales y entornos 2D solo seutilizará el valor Z)
@@ -46,36 +40,26 @@ continuar = true;
 array = [];
 arrayFiltrado = [];
 
-
 %% Bucle de control infinito
-while (continuar)
-    sonar0 = receive(sonar0_sub, 10);
-    s0 = sonar0.Range_
 
-    sonar1 = receive(sonar1_sub, 10);
-    s1 = sonar1.Range_;
+while (contador < 1002)
+    sonar0 = receive(sonar_sub0, 10);
+    s0 = sonar0.Range_;
 
-    sonar2 = receive(sonar2_sub, 10);
-    s2 = sonar2.Range_;
-
-    sonar3 = receive(sonar3_sub, 10);
-    s3 = sonar3.Range_;
-
-    sonar4 = receive(sonar4_sub, 10);
-    s4 = sonar4.Range_;
-
-    sonar5 = receive(sonar5_sub, 10);
-    s5 = sonar5.Range_;
-
-    sonar6 = receive(sonar6_sub, 10);
-    s6 = sonar6.Range_;
-
-    sonar7 = receive(sonar7_sub, 10);
-    s7 = sonar7.Range_;
-
-
-    pause(5);
+    array(contador) = s0;
+    contador = contador + 1
 
     waitfor(r);
-
 end
+
+msg.Angular.X=0;
+send(pub,msg);
+
+arrayFiltrado = movmean(array,5); % aplicamos un filtro de media móvil con ventana de longitud 5
+plot(array,'r'); 
+hold on; 
+plot(arrayFiltrado,'b');
+
+title('Ejercicio 4.3')
+xlabel('Numero de muestras')
+ylabel('Distancia')
