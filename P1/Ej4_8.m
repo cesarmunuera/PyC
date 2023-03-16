@@ -42,9 +42,14 @@ r = robotics.Rate(10);
 
 %% Variables
 dist = 5.1;
+contador = 0;
+c0 = 0;
+c3 = 0;
+c5 = 0;
+ctrasero = 0;
 
 %% Comienza el programa
-while (1)
+while (contador < 100)
 
     sonar0 = receive(sonar0_sub, 10);
     sonar1 = receive(sonar1_sub, 10);
@@ -60,7 +65,7 @@ while (1)
     else
         sonarTrasero = 6;
     end
-    % sonar0 = sonar3 sonar1=sonar0 sonar2 = sonar5 sonarTrasero = sonar7 y sonar6 
+    % sonar0 = sonar3 sonar1=sonar0 sonar2 = sonar5 sonarTrasero = sonar7 y sonar6
     if (sonar3.Range_ < dist && sonar0.Range_ > dist && sonar5.Range_ > dist && sonarTrasero > dist)
         disp('1');
     elseif (sonar3.Range_ > dist && sonar0.Range_ > dist && sonar5.Range_ < dist && sonarTrasero > dist)
@@ -95,5 +100,32 @@ while (1)
         disp('0');
     end
 
+    %Implementamos la funcion de calidad del apartado anterior
+    sonar0 = receive(sonar_sub0, 10);
+    sonar3 = receive(sonar_sub3, 10);
+    sonar5 = receive(sonar_sub5, 10);
+
+    if (sonar0.Range_ < 3)
+        c0 = c0 + 1;
+    end
+
+    if (sonar3.Range_ < 3)
+        c3 = c3 + 1;
+    end
+
+    if (sonar3.Range_ < 3)
+        c5 = c5 + 1;
+    end
+    if (sonar6.Range_ < 3 && sonar7.Range_ < 3)
+        ctrasero = ctrasero + 1;
+    end
+
+    contador = contador + 1
+
     waitfor(r);
 end
+
+disp("La fiabilidad del sonar 0 es del " + c0 + " %.")
+disp("La fiabilidad del sonar 3 es del " + c3 + " %.")
+disp("La fiabilidad del sonar 5 es del " + c5 + " %.")
+disp("La fiabilidad del sonar trasero es del " + ctrasero + " %.")

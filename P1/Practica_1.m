@@ -46,7 +46,6 @@ while (contador < 100)
     sonar1 = receive(sonar_sub1, 10);
     sonar2 = receive(sonar_sub2, 10);
     sonar3 = receive(sonar_sub3, 10);
-    sonar4 = receive(sonar_sub4, 10);
 
     if (sonar0.Range_ < 3)
         c0 = c0 + 1;
