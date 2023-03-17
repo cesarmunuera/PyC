@@ -1,15 +1,22 @@
 %% INICIALIZACIÓN DE ROS
 % Se definen las variables de entorno ROS_MASTER_URI (ip del Master) y ROS_IP (IP de la máquina donde se ejecuta Matlab). Si se está conectado a la misma red, la variable ROS_IP no es necesario definirla.
-setenv('ROS_MASTER_URI','http://192.168.1.23:11311')
-setenv('ROS_IP','192.168.1.5')
+setenv('ROS_MASTER_URI','http://172.29.30.172:11311')
+setenv('ROS_IP','172.29.29.56')
 rosshutdown
 rosinit % Inicialización de ROS
 
+%% Activamos los motores
+pub_motor = rospublisher('/cmd_motor_state', 'std_msgs/Int32');
+msg_motor = rosmessage(pub_motor);
+msg_motor.Data = 1;
+send(pub_motor,msg_motor)
+
 %% DECLARACIÓN DE SUBSCRIBERS
-odom_sub=rossubscriber('/robot0/odom'); % Subscripción a la odometría
+global odom_sub;
+odom_sub = rossubscriber('/pose'); % Subscripción a la odometría
 
 %% DECLARACIÓN DE PUBLISHERS
-pub = rospublisher('/robot0/cmd_vel', 'geometry_msgs/Twist');
+pub = rospublisher('/cmd_vel', 'geometry_msgs/Twist');
 
 %% GENERACIÓN DE MENSAJE
 msg=rosmessage(pub) %% Creamos un mensaje del tipo declarado en "pub"(geometry_msgs/Twist)
@@ -29,7 +36,7 @@ r = robotics.Rate(10);
 
 %% Comienza el programa
 while (1)
-
+    avanzar(2);
     waitfor(r);
 end
 
