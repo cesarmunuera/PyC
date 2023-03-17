@@ -27,10 +27,24 @@ send(pub,msg);
 %% Definimos la perodicidad del bucle (10 hz)
 r = robotics.Rate(10);
 
+%% Variables
+array_izq = [];
+array_cent = [];
+array_der = [];
+
 % Imprimimos datos
 laser0 = receive(laser_sub, 10);
-laser0.MessageType.
-showdetails(laser0)
+plot(laser0.Ranges)
+
+%Dividimos el array de haces entre 3
+num_haces = size(laser0.Ranges, 1);
+num_haces
+tam_array = num_haces / 3
+
+array_izq = laser0.Ranges(1:tam_array);
+array_cent = laser0.Ranges(tam_array:tam_array*2);
+array_der = laser0.Ranges(tam_array*2:end);
+
 
 
 %% Comienza el programa
