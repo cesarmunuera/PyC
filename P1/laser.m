@@ -35,10 +35,12 @@ mix = [];
 ci = 0;
 cd = 0;
 cc = 0;
+dist = 4;
 
 %% Comienza el programa
 for i=1:100
 
+    % Primero valoramos la fiabilidad de los sensores ++++++++++++++++++++++
     li = true;
     ld = true;
     lc = true;
@@ -54,28 +56,26 @@ for i=1:100
     %Ahora tenemos 3 zonas de trabajo, como 3 laser independientes
 
     for j = length(array_izq) %Recorremos array izq y der
-        if (array_izq(j) > 3)
-            li = false;
+        if (array_izq(j) < dist)
+            ci = ci + 1;
         end
-        if (array_der(j) > 3)
-            ld = false;
+        if (array_der(j) < dist)
+            cd = cd + 1;
         end
+
+        if (j == length(array_izq))
+
     end
     for k = length(array_cent) %Recorremos array central
-        if (array_cent(k) > 3)
-            lc = false;
+        if (array_cent(k) < dist)
+            cc = cc + 1;
         end
     end
 
 
-    if(li == true)
-        ci = ci + 1;
-    end
-    if(ld == true)
-        cd = cd + 1;
-    end
-    if(lc == true)
-        cc = cc + 1;
+    %Ahora toca realizar la codificaión
+    if(array_izq > dist && array_cent < dist && array_der > dist)
+        disp("Codificación 1")
     end
 
 end
