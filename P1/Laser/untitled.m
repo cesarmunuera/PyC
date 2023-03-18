@@ -28,23 +28,26 @@ send(pub,msg);
 r = robotics.Rate(10);
 
 %% Variables
-aux = [];
-value = 0;
+array_izq = [];
+array_cent = [];
+array_der = [];
+
+% Imprimimos datos
 laser0 = receive(laser_sub, 10);
-contador = 1;
-total = 0;
+plot(laser0.Ranges)
+
+%Dividimos el array de haces entre 3
+num_haces = size(laser0.Ranges, 1);
+num_haces
+tam_array = num_haces / 3
+
+array_izq = laser0.Ranges(1:tam_array);
+array_cent = laser0.Ranges(tam_array:tam_array*2);
+array_der = laser0.Ranges(tam_array*2:end);
+
+
 
 %% Comienza el programa
-for i = 1:size(laser0.Ranges, 1)
-    if (laser0.Ranges(i) < 2)
-        aux(contador) = laser0.Ranges(i);
-        contador = contador + 1;
-    end
+while (1)
+    waitfor(r);
 end
-
-plot(aux, contador)
-disp("De los 667 haces del laser, " + contador + " estan a menos de 2m")
-
-plot(aux)
-xlabel("Número de tomas")
-ylabel("Distancia")
