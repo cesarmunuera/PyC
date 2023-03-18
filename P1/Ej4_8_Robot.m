@@ -1,7 +1,7 @@
 %% INICIALIZACIÓN DE ROS
 % Se definen las variables de entorno ROS_MASTER_URI (ip del Master) y ROS_IP (IP de la máquina donde se ejecuta Matlab). Si se está conectado a la misma red, la variable ROS_IP no es necesario definirla.
-setenv('ROS_MASTER_URI','http://172.29.30.175:11311')
-setenv('ROS_IP','172.29.29.51')
+setenv('ROS_MASTER_URI','http://172.29.30.176:11311')
+setenv('ROS_IP','172.29.29.72')
 rosshutdown
 rosinit % Inicialización de ROS
 
@@ -41,7 +41,7 @@ send(pub,msg);
 r = robotics.Rate(10);
 
 %% Variables
-dist = 5.1;
+dist = 4.5;
 contador = 0;
 c0 = 0;
 c3 = 0;
@@ -52,20 +52,19 @@ ctrasero = 0;
 while (contador < 100)
 
     sonar0 = receive(sonar0_sub, 10);
-    sonar1 = receive(sonar1_sub, 10);
-    sonar2 = receive(sonar2_sub, 10);
     sonar3 = receive(sonar3_sub, 10);
-    sonar4 = receive(sonar4_sub, 10);
     sonar5 = receive(sonar5_sub, 10);
     sonar6 = receive(sonar6_sub, 10);
     sonar7 = receive(sonar7_sub, 10);
 
+
     if (sonar6.Range_ < dist || sonar7.Range_ < dist)
         sonarTrasero = 2;
     else
-        sonarTrasero = 6;
+        sonarTrasero = 5;
     end
-    % sonar0 = sonar3 sonar1=sonar0 sonar2 = sonar5 sonarTrasero = sonar7 y sonar6
+
+
     if (sonar3.Range_ < dist && sonar0.Range_ > dist && sonar5.Range_ > dist && sonarTrasero > dist)
         disp('1');
     elseif (sonar3.Range_ > dist && sonar0.Range_ > dist && sonar5.Range_ < dist && sonarTrasero > dist)
@@ -100,27 +99,24 @@ while (contador < 100)
         disp('0');
     end
 
-    %Implementamos la funcion de calidad del apartado anterior
-    sonar0 = receive(sonar_sub0, 10);
-    sonar3 = receive(sonar_sub3, 10);
-    sonar5 = receive(sonar_sub5, 10);
 
-    if (sonar0.Range_ < 3)
+    if (sonar0.Range_ < dist)
         c0 = c0 + 1;
     end
 
-    if (sonar3.Range_ < 3)
+    if (sonar3.Range_ < dist)
         c3 = c3 + 1;
     end
 
-    if (sonar3.Range_ < 3)
+    if (sonar3.Range_ < dist)
         c5 = c5 + 1;
     end
-    if (sonar6.Range_ < 3 && sonar7.Range_ < 3)
+
+    if (sonar6.Range_ < dist || sonar7.Range_ < dist)
         ctrasero = ctrasero + 1;
     end
 
-    contador = contador + 1
+    contador = contador + 1;
 
     waitfor(r);
 end
