@@ -28,23 +28,58 @@ send(pub,msg);
 r = robotics.Rate(10);
 
 %% Variables
-laser0 = receive(laser_sub, 10);
-contador = 1;
-aux1 = [];
-arrayFilrado = [];
+array_izq = [];
+array_cent = [];
+array_der = [];
+mix = [];
+ci = 0;
+cd = 0;
+cc = 0;
 
 %% Comienza el programa
-for i = 1:1001
-    aux1(i) = laser0.Ranges(1);
+for i=1:100
+
+    li = true;
+    ld = true;
+    lc = true;
+
+    % Dividimos el array de haces entre 3
+    laser0 = receive(laser_sub, 10);
+    num_haces = size(laser0.Ranges, 1);
+    tam_array = int32(num_haces / 3);
+
+    array_izq = reshape(laser0.Ranges(1:tam_array), 1, tam_array);
+    array_cent = reshape(laser0.Ranges(tam_array+1:(tam_array*2)+1), 1, tam_array + 1);
+    array_der = reshape(laser0.Ranges((tam_array*2)+2:num_haces), 1, tam_array);
+    %Ahora tenemos 3 zonas de trabajo, como 3 laser independientes
+
+    for j = length(array_izq) %Recorremos array izq y der
+        if (array_izq(j) > 3)
+            li = false;
+        end
+        if (array_der(j) > 3)
+            ld = false;
+        end
+    end
+    for k = length(array_cent) %Recorremos array central
+        if (array_cent(k) > 3)
+            lc = false;
+        end
+    end
+
+
+    if(li == true)
+        ci = ci + 1;
+    end
+    if(ld == true)
+        cd = cd + 1;
+    end
+    if(lc == true)
+        cc = cc + 1;
+    end
+
 end
 
-arrayFiltrado = movmean(aux1,5); % aplicamos un filtro de media móvil con ventana de longitud 5
-
-plot(aux1,'r'); 
-hold on; 
-plot(arrayFiltrado,'b');
-title('Ejercicio 5.2, apartado 4')
-xlabel('Numero de muestras')
-ylabel('Distancia')
-legend('Datos sin filtrar', 'Datos filtrados')
-
+disp("La fiabilidad del laser por la izquierda es del " + ci + " %.");
+disp("La fiabilidad del laser por la derecha es del " + cd + " %.");
+disp("La fiabilidad del laser por el centro es del " + cc + " %.")
