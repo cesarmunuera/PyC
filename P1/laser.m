@@ -28,22 +28,14 @@ send(pub,msg);
 r = robotics.Rate(10);
 
 %% Variables
-aux = [];
-value = 0;
 laser0 = receive(laser_sub, 10);
 contador = 1;
-total = 0;
+aux = [];
 
 %% Comienza el programa
-for i = 1:size(laser0.Ranges, 1)
-    if (laser0.Ranges(i) < 2)
-        aux(contador) = laser0.Ranges(i);
-        contador = contador + 1;
-    end
+for i = 1:1001
+    aux(i) = laser0.Ranges(1);
 end
-
-plot(aux, contador)
-disp("De los 667 haces del laser, " + contador + " estan a menos de 2m")
 
 plot(aux)
 xlabel("Número de tomas")
