@@ -30,13 +30,21 @@ r = robotics.Rate(10);
 %% Variables
 laser0 = receive(laser_sub, 10);
 contador = 1;
-aux = [];
+aux1 = [];
+arrayFilrado = [];
 
 %% Comienza el programa
 for i = 1:1001
-    aux(i) = laser0.Ranges(1);
+    aux1(i) = laser0.Ranges(1);
 end
 
-plot(aux)
-xlabel("Número de tomas")
-ylabel("Distancia")
+arrayFiltrado = movmean(aux1,5); % aplicamos un filtro de media móvil con ventana de longitud 5
+
+plot(aux1,'r'); 
+hold on; 
+plot(arrayFiltrado,'b');
+title('Ejercicio 5.2, apartado 4')
+xlabel('Numero de muestras')
+ylabel('Distancia')
+legend('Datos sin filtrar', 'Datos filtrados')
+
