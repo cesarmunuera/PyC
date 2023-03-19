@@ -39,6 +39,7 @@ sum = 0;
 mi = 0;
 md = 0;
 mc = 0;
+mayoria = 51;
 
 %% Comienza el programa
 for i=1:100
@@ -112,20 +113,20 @@ disp("La probabilidad de pared por el centro es del " + mc + " %.");
 
 
 %Ahora procedemos a realizar la codificación -----------------------------
-if(mi < 50 && mc > 50 && md < 50)
+if(mi < mayoria && mc > mayoria && md < mayoria)
     disp("Codificación 1")
-elseif(mi < 50 && mc < 50 && md > 50)
+elseif(mi < mayoria && mc < mayoria && md > mayoria)
     disp("Codificación 2")
-elseif(mi > 50 && mc < 50 && md < 50)
+elseif(mi > mayoria && mc < mayoria && md < mayoria)
     disp("Codificación 4")
-elseif(mi < 50 && mc > 50 && md > 50)
+elseif(mi < mayoria && mc > mayoria && md > mayoria)
     disp("Codificación 5")
-elseif(mi > 50 && mc > 50 && md < 50)
+elseif(mi > mayoria && mc > mayoria && md < mayoria)
     disp("Codificación 7")
-elseif(mi > 50 && mc < 50 && md > 50)
+elseif(mi > mayoria && mc < mayoria && md > mayoria)
     disp("Codificación 9")
-elseif(mi > 50 && mc > 50 && md > 50)
+elseif(mi > mayoria && mc > mayoria && md > mayoria)
     disp("Codificación 14")
-elseif(mi < 50 && mc < 50 && md < 50)
+elseif(mi < mayoria && mc < mayoria && md < mayoria)
     disp("Codificación 0")
 end
