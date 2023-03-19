@@ -32,19 +32,27 @@ array_izq = [];
 array_cent = [];
 array_der = [];
 mix = [];
-ci = 0;
-cd = 0;
-cc = 0;
+cti = 0;
+ctd = 0;
+ctc = 0;
 dist = 4;
+sum = 0;
+mi = 0;
+md = 0;
+mc = 0;
 
 %% Comienza el programa
 for i=1:100
 
-    % Primero valoramos la fiabilidad de los sensores ++++++++++++++++++++++
+    %Variables para resetear
     li = true;
     ld = true;
     lc = true;
+    ci = 0;
+    cc = 0;
+    cd = 0;
 
+    % Primero valoramos la fiabilidad de los sensores ---------------------
     % Dividimos el array de haces entre 3
     laser0 = receive(laser_sub, 10);
     num_haces = size(laser0.Ranges, 1);
@@ -55,31 +63,51 @@ for i=1:100
     array_der = reshape(laser0.Ranges((tam_array*2)+2:num_haces), 1, tam_array);
     %Ahora tenemos 3 zonas de trabajo, como 3 laser independientes
 
-    for j = length(array_izq) %Recorremos array izq y der
+    for j = 1:length(array_izq) %Recorremos array izq y der -------------------
         if (array_izq(j) < dist)
             ci = ci + 1;
         end
         if (array_der(j) < dist)
             cd = cd + 1;
         end
-
+        %Arriba sumamos 1 si detecta pared
+        %Abajo obtenemos la probabilidad de pared con ese contador.
+        %Esa probabilidad la almacenamos para hacer una media.
         if (j == length(array_izq))
-
-    end
-    for k = length(array_cent) %Recorremos array central
-        if (array_cent(k) < dist)
-            cc = cc + 1;
+            sum = 0;
+            sum = (ci * 100)/length(array_izq);
+            cti = cti + sum;
+        end
+        if (j == length(array_der))
+            sum = 0;
+            sum = (cd * 100)/length(array_der);
+            ctd = ctd + sum;
         end
     end
 
 
-    %Ahora toca realizar la codificaión
-    if(array_izq > dist && array_cent < dist && array_der > dist)
-        disp("Codificación 1")
+    for k = 1:length(array_cent)%Recorremos el array central ----------------
+        if (array_cent(k) < dist)
+            cc = cc + 1;
+        end
+        %Arriba sumamos 1 si detecta pared
+        %Abajo obtenemos la probabilidad de pared con ese contador.
+        %Esa probabilidad la almacenamos para hacer una media.
+        if (k == length(array_cent))
+            sum = 0;
+            sum = (cc * 100)/length(array_cent);
+            ctc = ctc + sum;
+        end
     end
+
+
+    %Ahora hacemos la media de las probabilidades --------------------------
+    mi = cti / length(array_izq);
+    md = ctd / length(array_der);
+    mc = ctc / length(array_cent);
 
 end
 
-disp("La fiabilidad del laser por la izquierda es del " + ci + " %.");
-disp("La fiabilidad del laser por la derecha es del " + cd + " %.");
-disp("La fiabilidad del laser por el centro es del " + cc + " %.")
+disp("La fiabilidad del laser por la izquierda es del " + mi + " %.");
+disp("La fiabilidad del laser por la derecha es del " + md + " %.");
+disp("La fiabilidad del laser por el centro es del " + mc + " %.")
