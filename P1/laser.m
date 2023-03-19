@@ -102,11 +102,13 @@ for i=1:100
 
 
     %Ahora hacemos la media de las probabilidades --------------------------
-    mi = cti / length(array_izq);
-    md = ctd / length(array_der);
-    mc = ctc / length(array_cent);
+
 
 end
+
+mi = cti / length(array_izq);
+md = ctd / length(array_der);
+mc = ctc / length(array_cent);
 
 disp("La fiabilidad del laser por la izquierda es del " + mi + " %.");
 disp("La fiabilidad del laser por la derecha es del " + md + " %.");
