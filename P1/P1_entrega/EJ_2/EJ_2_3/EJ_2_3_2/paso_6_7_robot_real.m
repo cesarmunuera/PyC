@@ -1,15 +1,16 @@
 %% INICIALIZACIÓN DE ROS
 % Se definen las variables de entorno ROS_MASTER_URI (ip del Master) y ROS_IP (IP de la máquina donde se ejecuta Matlab). Si se está conectado a la misma red, la variable ROS_IP no es necesario definirla.
-setenv('ROS_MASTER_URI','http://192.168.1.23:11311')
-setenv('ROS_IP','192.168.1.5')
+setenv('ROS_MASTER_URI','http://172.29.30.175:11311')
+setenv('ROS_IP','172.29.29.65')
 rosshutdown
 rosinit % Inicialización de ROS
 
 %% DECLARACIÓN DE SUBSCRIBERS
 laser_sub=rossubscriber("/scan"); % Subscripción a la odometría
-% https://es.mathworks.com/help/ros/ref/ros2subscriber.receive.html?searchHighlight=ros%20lasersub&s_tid=srchtitle_ros%2520lasersub_3 ---- Es la documentacion haz ctrl F y busca /scan
+laser0 = receive(laser_sub, 10);
+
 %% DECLARACIÓN DE PUBLISHERS
-pub = rospublisher('/robot0/cmd_vel', 'geometry_msgs/Twist');
+pub = rospublisher('/cmd_vel', 'geometry_msgs/Twist');
 
 %% GENERACIÓN DE MENSAJE
 msg=rosmessage(pub); %% Creamos un mensaje del tipo declarado en "pub"(geometry_msgs/Twist)
@@ -31,11 +32,12 @@ r = robotics.Rate(10);
 array_izq = [];
 array_cent = [];
 array_der = [];
+array_atras = [];
 cti = 0;
 ctd = 0;
 ctc = 0;
 cta = 0;
-dist = 3.9;
+dist = 7.9;
 sum = 0;
 mi = 0;
 md = 0;
@@ -60,11 +62,15 @@ for i=1:100
     laser0 = receive(laser_sub, 10);
     num_haces = length(laser0.Ranges);
     tam_array = int32(num_haces / 4);
-    
-    array_der = reshape(laser0.Ranges(1:tam_array), 1, tam_array);
-    array_cent = reshape(laser0.Ranges(tam_array+1:(tam_array*2)), 1, tam_array);
-    array_izq = reshape(laser0.Ranges((tam_array*2)+1:(tam_array*3)), 1, tam_array);
-    array_atras = reshape(laser0.Ranges((tam_array*3)+1:(tam_array*4)), 1, tam_array);
+
+    array_atras = reshape(laser0.Ranges(1:45), 1, 45);
+    array_der = reshape(laser0.Ranges(46:135), 1, 90);
+    array_cent = reshape(laser0.Ranges(136:225), 1, 90);
+    array_izq = reshape(laser0.Ranges(226:315), 1, 90);
+    array_aux = reshape(laser0.Ranges(316:360), 1, 45);
+
+    array_atras = horzcat(array_atras, array_aux);
+
     %Ahora tenemos 3 zonas de trabajo, como 3 laser independientes
 
     for j = 1:length(array_izq) %Recorremos array izq y der -------------------
@@ -118,7 +124,7 @@ ma = cta / 100;
 disp("La probabilidad de pared por la izquierda es del " + mi + " %.");
 disp("La probabilidad de pared por la derecha es del " + md + " %.");
 disp("La probabilidad de pared por el centro es del " + mc + " %.");
-disp("La probabilidad de pared por el centro es del " + ma + " %.");
+disp("La probabilidad de pared por detras es del " + ma + " %.");
 
 
 %Ahora procedemos a realizar la codificación -----------------------------
