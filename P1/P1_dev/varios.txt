@@ -1,4 +1,0 @@
-s0 - delantero
-s1 - izq
-s2 - der
-s3 - trasero
