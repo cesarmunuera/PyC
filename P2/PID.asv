@@ -6,6 +6,8 @@ classdef PID
         Kp
         Ki
         Kd
+        ti
+        td
         inc_t
         u
         v_max
@@ -13,12 +15,17 @@ classdef PID
 
     methods
         function obj = untitled(Kp, ti, td, inc_t, v_max)
+            %UNTITLED Construct an instance of this class
+            %   Detailed explanation goes here
             obj.Kp = Kp;
+            obj.ti = ti;
+            obj.td = td;
             obj.inc_t = inc_t;
             obj.u = [];
             obj.v_max = v_max;
-            obj.Kd = Kp * td;
+            obj.Kd = Kp + td;
             obj.Ki = Kp / ti;
+
         end
 
         function vel = getVel(error,k)

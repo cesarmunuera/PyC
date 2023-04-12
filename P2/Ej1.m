@@ -19,6 +19,9 @@ waitfor(r);
 while (strcmp(odom.LatestMessage.ChildFrameId,'robot0')~=1)
     odom.LatestMessage
 end
+%% Instanciacion de los objetos de la clase PID
+pid_v = PID(1, 1, 1, 1, 1);
+pid_w = PID(1, 1, 1, 1, 0.5);
 %% Umbrales para condiciones de parada del robot
 umbral_distancia = 0.2;
 umbral_angulo = 0.2;
