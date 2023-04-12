@@ -1,0 +1,7 @@
+- Como sacar los valores de Kp, ti, td
+
+- Que se hace con u(k-1) y u(k-2)
+
+- Para sacar ki*e(t), que es e(t). Comprobar si este paso era el innecesario.
+
+- u(k) cuando k=0 es la vel_max? 

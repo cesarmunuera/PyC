@@ -1,7 +1,4 @@
-classdef PID
-    %UNTITLED Summary of this class goes here
-    %   Detailed explanation goes here
-
+ classdef PID
     properties
         Kp
         Ki
@@ -31,23 +28,19 @@ classdef PID
                 %que valor poner a k-2
             end 
 
-            %Calculo de kp*e´(t)
-
+            %Calculo de kp*e´(t) ------------------------------------------
             p = (kp * (error(k) - error(k-1))/inc_t);
 
-            % Calculo de ki * e(t)
-            
+            % Calculo de ki * e(t) ----------------------------------------
             %Como se hace??
 
-            %Calculo de kd * e´´(t)
-
+            %Calculo de kd * e´´(t)----------------------------------------
             d = (kd * (error(k) - 2 * error(k-1) + error(k-2))/pow2(inc_t));
 
-            % U´(t) = kp*e´(t) + ki * e(t) + kd * e´´(t)
-
+            % U´(t) = kp*e´(t) + ki * e(t) + kd * e´´(t)-------------------
             u_prima = p + d;
 
-            % Calculo de u(k)
+            % Calculo de u(k)----------------------------------------------
             if k == 0  
                 u(k) = (inc_t * u_prima) + v_max;
             else
