@@ -1,7 +1,9 @@
+%% DESCONEXIÓN DE ROS
 rosshutdown;
+
 %% INICIALIZACIÓN DE ROS (COMPLETAR ESPACIOS CON LAS DIRECCIONES IP)
-setenv('ROS_MASTER_URI','http://172.22.18.180:11311');
-setenv('ROS_IP','172.22.5.50');
+setenv('ROS_MASTER_URI','http://192.168.1.12:11311');
+setenv('ROS_IP','192.168.1.7');
 rosinit() % Inicialización de ROS en la IP correspondiente
 
 %% DECLARACIÓN DE VARIABLES NECESARIAS PARA EL CONTROL
@@ -9,8 +11,8 @@ Xp = 10;
 Yp = 10;
 v_max = 1;
 w_max = 0.5;
-kp = 0.2;
-td = 0;
+kp = 0.3;
+td = 0.5;
 rate = 10;
 v_error = 0;
 w_error = 0;
@@ -31,13 +33,13 @@ pid_v = tpm(kp, td, rate, 1);
 pid_w = tpm(kp, td, rate, 0.5);
 
 %% Umbrales para condiciones de parada del robot
-umbral_distancia = 0.2;
-umbral_angulo = 0.2;
-
+umbral_distancia = 0.1;
+umbral_angulo = 0.1;
+tic
 %% Bucle de control infinito
 while (1)
     %% Obtenemos la posición y orientación actuales
-    odom = receive(odom_sub, 10)
+    odom = receive(odom_sub, 10);
     pos=odom.Pose.Pose.Position;
     X = pos.X;
     Y = pos.Y;
@@ -58,17 +60,30 @@ while (1)
     %% Condición de parada
     Edist = error_lineal;
     Eori = error_angular;
-    if (Edist<umbral_distancia) && (abs(Eori)<umbral_angulo)
+    
+    % El robot tiene bien la posicion y orientacion
+    if (Edist<umbral_distancia) && (abs(Eori)<umbral_angulo) 
+        msg_vel.Angular.Z = 0;
+        msg_vel.Linear.X = 0;
+        send(pub,msg_vel);
         break;
+    % El robot tiene bien solamente la posicion
+    elseif (Edist<umbral_distancia)
+        msg_vel.Linear.X = 0;
+        msg_vel.Angular.Z= consigna_vel_ang;
+    %El robot tiene bien solamente la orientacion
+    elseif (abs(Eori)<umbral_angulo)
+        msg_vel.Angular.Z = 0;
+        msg_vel.Linear.X= consigna_vel_linear;
+    % El robot no tiene bien ninguna de las dos
+    else
+        msg_vel.Linear.X= consigna_vel_linear;
+        msg_vel.Linear.Y=0;
+        msg_vel.Linear.Z=0;
+        msg_vel.Angular.X=0;
+        msg_vel.Angular.Y=0;
+        msg_vel.Angular.Z= consigna_vel_ang;
     end
-
-    %% Aplicamos consignas de control
-    msg_vel.Linear.X= consigna_vel_linear;
-    msg_vel.Linear.Y=0;
-    msg_vel.Linear.Z=0;
-    msg_vel.Angular.X=0;
-    msg_vel.Angular.Y=0;
-    msg_vel.Angular.Z= consigna_vel_ang;
 
     % Comando de velocidad
     send(pub,msg_vel);
@@ -76,6 +91,7 @@ while (1)
     % Temporización del bucle según el parámetro establecido en r
     waitfor(r);
 end
+toc
 
 %% DESCONEXIÓN DE ROS
 rosshutdown;

@@ -5,6 +5,7 @@ classdef tpm
         inc_t
         u
         a_error
+        v_max
     end
 
     methods
@@ -14,6 +15,7 @@ classdef tpm
             obj.u = [0, v_max];
             obj.a_error = zeros(1, 3);
             obj.kd = kp * td;
+            obj.v_max = v_max;
         end
 
         function vel = getSpeed(obj, polla)
@@ -35,7 +37,12 @@ classdef tpm
             obj.u(1) = (obj.inc_t * u_prima) + obj.u(2);
             obj.u(2) = obj.u(1);
 
-            vel = obj.u(1);
+            %Limitamos la velocidad
+            if (obj.u(1) > obj.v_max)
+                vel = obj.v_max;
+            else
+                vel = obj.u(1);
+            end
 
         end
     end
