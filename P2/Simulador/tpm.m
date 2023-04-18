@@ -11,18 +11,18 @@ classdef tpm
     methods
         function obj = tpm(kp, td, inc_t, v_max)
             obj.kp = kp;
+            obj.kd = kp * td;
             obj.inc_t = inc_t;
             obj.u = [0, v_max];
             obj.a_error = zeros(1, 3);
-            obj.kd = kp * td;
             obj.v_max = v_max;
         end
 
-        function vel = getSpeed(obj, polla)
+        function vel = getSpeed(obj, mistake)
 
             obj.a_error(3) = obj.a_error(2);
             obj.a_error(2) = obj.a_error(1);
-            obj.a_error(1) = polla;
+            obj.a_error(1) = mistake;
 
             %Calculo de kp*e´(t)
             p = (obj.kp * (obj.a_error(1) - obj.a_error(2))/obj.inc_t);

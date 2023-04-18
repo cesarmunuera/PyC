@@ -2,7 +2,7 @@
 rosshutdown;
 
 %% INICIALIZACIÓN DE ROS (COMPLETAR ESPACIOS CON LAS DIRECCIONES IP)
-setenv('ROS_MASTER_URI','http://192.168.1.12:11311');
+setenv('ROS_MASTER_URI','http://192.168.1.13:11311');
 setenv('ROS_IP','192.168.1.7');
 rosinit() % Inicialización de ROS en la IP correspondiente
 
@@ -63,22 +63,19 @@ while (1)
     consigna_vel_linear = pid_v.getSpeed(error_lineal);
     consigna_vel_ang = pid_w.getSpeed(error_angular);
 
-    %% Condición de parada
-    Edist = error_lineal;
-    Eori = error_angular;
-    
+    %% Comienza el control
     % El robot tiene bien la posicion y orientacion
-    if (Edist<umbral_distancia) && (abs(Eori)<umbral_angulo) 
+    if (error_lineal<umbral_distancia) && (abs(error_angular)<umbral_angulo) 
         msg_vel.Angular.Z = 0;
         msg_vel.Linear.X = 0;
         send(pub,msg_vel);
         break;
     % El robot tiene bien solamente la posicion
-    elseif (Edist<umbral_distancia)
+    elseif (error_lineal<umbral_distancia)
         msg_vel.Linear.X = 0;
         msg_vel.Angular.Z= consigna_vel_ang;
     %El robot tiene bien solamente la orientacion
-    elseif (abs(Eori)<umbral_angulo)
+    elseif (abs(error_angular)<umbral_angulo)
         msg_vel.Angular.Z = 0;
         msg_vel.Linear.X= consigna_vel_linear;
     % El robot no tiene bien ninguna de las dos
