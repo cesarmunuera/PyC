@@ -16,6 +16,9 @@ td = 0.5;
 rate = 10;
 v_error = 0;
 w_error = 0;
+array_lineal = [];
+array_ang = [];
+contador = 0;
 
 %% DECLARACIÓN DE SUBSCRIBERS
 odom_sub = rossubscriber('/robot0/odom'); % Subscripción a la odometría
@@ -57,6 +60,9 @@ while (1)
     consigna_vel_linear = pid_v.getSpeed(error_lineal);
     consigna_vel_ang = pid_w.getSpeed(error_angular);
 
+    array_lineal = [array_lineal, consigna_vel_linear];
+    array_ang = [array_ang, consigna_vel_ang];
+
     %% Comienza el control
     % El robot tiene bien la posicion y orientacion
     if (error_lineal<umbral_distancia) && (abs(error_angular)<umbral_angulo) 
@@ -89,6 +95,13 @@ while (1)
     waitfor(r);
 end
 toc
+
+plot(array_lineal, "r")
+%hold on;
+%plot(array_ang, "b")
+xlabel("Tiempo")
+ylabel("Velocidad")
+%legend('Velocidad lineal', 'Velocidad angular');
 
 %% DESCONEXIÓN DE ROS
 rosshutdown;
