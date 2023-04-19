@@ -7,18 +7,18 @@ setenv('ROS_IP','192.168.1.7');
 rosinit() % Inicialización de ROS en la IP correspondiente
 
 %% DECLARACIÓN DE VARIABLES NECESARIAS PARA EL CONTROL
-Xp = 10;
+Xp = 18;
 Yp = 10;
 v_max = 1;
 w_max = 0.5;
 kp = 0.3;
 td = 0.5;
+ti = 0;
 rate = 10;
 v_error = 0;
 w_error = 0;
 array_lineal = [];
 array_ang = [];
-contador = 0;
 
 %% DECLARACIÓN DE SUBSCRIBERS
 odom_sub = rossubscriber('/robot0/odom'); % Subscripción a la odometría
@@ -60,6 +60,7 @@ while (1)
     consigna_vel_linear = pid_v.getSpeed(error_lineal);
     consigna_vel_ang = pid_w.getSpeed(error_angular);
 
+    %% Apartado 1
     array_lineal = [array_lineal, consigna_vel_linear];
     array_ang = [array_ang, consigna_vel_ang];
 
@@ -96,12 +97,13 @@ while (1)
 end
 toc
 
+%% Apartado 1
 plot(array_lineal, "r")
-%hold on;
-%plot(array_ang, "b")
+hold on;
+plot(array_ang, "b")
 xlabel("Tiempo")
 ylabel("Velocidad")
-%legend('Velocidad lineal', 'Velocidad angular');
+legend('Velocidad lineal', 'Velocidad angular');
 
 %% DESCONEXIÓN DE ROS
 rosshutdown;
