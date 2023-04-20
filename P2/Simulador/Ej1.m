@@ -21,7 +21,6 @@ array_lineal = [];
 array_ang = [];
 error_lin = [];
 error_angu = [];
-contador = 0;
 
 %% DECLARACIÓN DE SUBSCRIBERS
 odom_sub = rossubscriber('/robot0/odom'); % Subscripción a la odometría
