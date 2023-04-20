@@ -2,23 +2,26 @@
 rosshutdown;
 
 %% INICIALIZACIÓN DE ROS (COMPLETAR ESPACIOS CON LAS DIRECCIONES IP)
-setenv('ROS_MASTER_URI','http://192.168.1.13:11311');
-setenv('ROS_IP','192.168.1.7');
+setenv('ROS_MASTER_URI','http://172.29.30.50:11311');
+setenv('ROS_IP','172.29.29.55');
 rosinit() % Inicialización de ROS en la IP correspondiente
 
 %% DECLARACIÓN DE VARIABLES NECESARIAS PARA EL CONTROL
-Xp = 18;
+Xp = 10;
 Yp = 10;
 v_max = 1;
 w_max = 0.5;
 kp = 0.3;
 td = 0.5;
-ti = 0;
+ti = 0.1;
 rate = 10;
 v_error = 0;
 w_error = 0;
 array_lineal = [];
 array_ang = [];
+error_lin = [];
+error_angu = [];
+contador = 0;
 
 %% DECLARACIÓN DE SUBSCRIBERS
 odom_sub = rossubscriber('/robot0/odom'); % Subscripción a la odometría
@@ -32,8 +35,8 @@ r = robotics.Rate(rate);
 waitfor(r);
 
 %% Instanciacion de los objetos de la clase PID
-pid_v = tpm(kp, td, rate, 1);
-pid_w = tpm(kp, td, rate, 0.5);
+pid_v = tpm(kp, td, ti, rate, 1);
+pid_w = tpm(kp, td, ti, rate, 0.5);
 
 %% Umbrales para condiciones de parada del robot
 umbral_distancia = 0.1;
@@ -56,13 +59,16 @@ while (1)
     %% Calculamos el error de orientación
     error_angular = atan2((Yp-Y),(Xp-X))-yaw;
 
+    error_lin = [error_lin, error_lineal];
+    error_angu = [error_angu, error_angular];
+
     %% Calculamos las consignas de velocidades
     consigna_vel_linear = pid_v.getSpeed(error_lineal);
     consigna_vel_ang = pid_w.getSpeed(error_angular);
 
-    %% Apartado 1
     array_lineal = [array_lineal, consigna_vel_linear];
     array_ang = [array_ang, consigna_vel_ang];
+
 
     %% Comienza el control
     % El robot tiene bien la posicion y orientacion
@@ -97,13 +103,21 @@ while (1)
 end
 toc
 
-%% Apartado 1
+subplot(2, 1, 1);
 plot(array_lineal, "r")
 hold on;
 plot(array_ang, "b")
 xlabel("Tiempo")
 ylabel("Velocidad")
 legend('Velocidad lineal', 'Velocidad angular');
+
+subplot(2, 1, 2);
+plot(error_lin, "r")
+hold on;
+plot(error_angu, "b")
+xlabel("Tiempo")
+ylabel("Error")
+legend('Error lineal', 'Error angular');
 
 %% DESCONEXIÓN DE ROS
 rosshutdown;
