@@ -2,21 +2,19 @@
 rosshutdown;
 
 %% INICIALIZACIÓN DE ROS (COMPLETAR ESPACIOS CON LAS DIRECCIONES IP)
-setenv('ROS_MASTER_URI','http://172.29.30.50:11311');
-setenv('ROS_IP','172.29.29.55');
+setenv('ROS_MASTER_URI','http://192.168.1.15:11311');
+setenv('ROS_IP','192.168.1.7');
 rosinit() % Inicialización de ROS en la IP correspondiente
 
 %% DECLARACIÓN DE VARIABLES NECESARIAS PARA EL CONTROL
-Xp = 10;
-Yp = 10;
+Xp = 15;
+Yp = 15;
 v_max = 1;
 w_max = 0.5;
-kp = 0.3;
-td = 0.5;
+kp = 0.5;
+td = 0.3;
 ti = 0.1;
 rate = 10;
-v_error = 0;
-w_error = 0;
 array_lineal = [];
 array_ang = [];
 error_lin = [];
