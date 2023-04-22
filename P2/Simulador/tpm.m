@@ -36,20 +36,18 @@ classdef tpm
             i = obj.ki * obj.a_error(1);
 
             % U´(t) = kp*e´(t) + ki * e(k) + kd * e´´(t)
-            u_prima = p + d;
+            u_prima = p + d + i;
 
             % Calculo de u(k) y actualizacion del array u
             obj.u(1) = (obj.inc_t * u_prima) + obj.u(2);
             obj.u(2) = obj.u(1);
 
-
-            vel = obj.u(1);
-%             %Limitamos la velocidad
-%             if (obj.u(1) > obj.v_max)
-%                 vel = obj.v_max;
-%             else
-%                 vel = obj.u(1);
-%             end
+            %Limitamos la velocidad
+            if (obj.u(1) > obj.v_max)
+                vel = obj.v_max;
+            else
+                vel = obj.u(1);
+            end
 
         end
     end

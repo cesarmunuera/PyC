@@ -2,18 +2,18 @@
 rosshutdown;
 
 %% INICIALIZACIÓN DE ROS (COMPLETAR ESPACIOS CON LAS DIRECCIONES IP)
-setenv('ROS_MASTER_URI','http://192.168.1.16:11311');
+setenv('ROS_MASTER_URI','http://192.168.1.15:11311');
 setenv('ROS_IP','192.168.1.7');
 rosinit() % Inicialización de ROS en la IP correspondiente
 
 %% DECLARACIÓN DE VARIABLES NECESARIAS PARA EL CONTROL
-Xp = 10;
-Yp = 10;
+Xp = 15;
+Yp = 15;
 v_max = 1;
 w_max = 0.5;
-kp = 10;
+kp = 0.5;
 td = 0.3;
-ti = 6;
+ti = 0.1;
 rate = 10;
 array_lineal = [];
 array_ang = [];
@@ -36,7 +36,7 @@ pid_v = tpm(kp, td, ti, rate, 1);
 pid_w = tpm(kp, td, ti, rate, 0.5);
 
 %% Umbrales para condiciones de parada del robot
-umbral_distancia = 0.03;
+umbral_distancia = 0.08;
 umbral_angulo = 0.05;
 
 %% Bucle de control infinito
@@ -69,19 +69,27 @@ while (1)
 
     %% Comienza el control
     % El robot tiene bien la posicion y orientacion
-    if (error_lineal<umbral_distancia) 
+    if (error_lineal<umbral_distancia) && (abs(error_angular)<umbral_angulo) 
         msg_vel.Angular.Z = 0;
         msg_vel.Linear.X = 0;
         send(pub,msg_vel);
         break;
+    % El robot tiene bien solamente la posicion
+    elseif (error_lineal<umbral_distancia)
+        msg_vel.Linear.X = 0;
+        msg_vel.Angular.Z= consigna_vel_ang;
+    %El robot tiene bien solamente la orientacion
+    elseif (abs(error_angular)<umbral_angulo)
+        msg_vel.Angular.Z = 0;
+        msg_vel.Linear.X= consigna_vel_linear;
+    % El robot no tiene bien ninguna de las dos
     else
         msg_vel.Linear.X= consigna_vel_linear;
-
-        if (abs(error_angular) > umbral_angulo)
-            msg_vel.Angular.Z= consigna_vel_ang;
-        else
-            msg_vel.Linear.Z=0;
-        end
+        msg_vel.Linear.Y=0;
+        msg_vel.Linear.Z=0;
+        msg_vel.Angular.X=0;
+        msg_vel.Angular.Y=0;
+        msg_vel.Angular.Z= consigna_vel_ang;
     end
 
     % Comando de velocidad
@@ -90,7 +98,6 @@ while (1)
     % Temporización del bucle según el parámetro establecido en r
     waitfor(r);
 end
-
 
 subplot(2, 1, 1);
 plot(array_lineal, "r")
