@@ -1,6 +1,0 @@
-- Como sacar los valores de Kp, ti, td?
-SACAR DE UNO EN UNO A OJO
-PRIMERO EL KP Y RESTO A 0, Y LUEGO EL TD.
-
-
-ENTREGA 4/MAYO
