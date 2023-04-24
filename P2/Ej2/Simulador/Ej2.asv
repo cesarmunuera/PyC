@@ -81,12 +81,10 @@ while (1)
 
     % Comando de velocidad
     send(pub,msg_vel);
-
-    %% Actualizamos posiciones y distancias
     last_dist_laser = dist_laser;
     last_dist = pos_X;
 
-    %% Temporización del bucle según el parámetro establecido en r
+    % Temporización del bucle según el parámetro establecido en r
     waitfor(r);
     if (i==MAX_TIME)
         break;

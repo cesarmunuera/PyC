@@ -3,24 +3,27 @@ classdef tpm
         kp
         kd
         ki
+        ko
         inc_t
         u
         a_error
         v_max
+        
     end
 
     methods
-        function obj = tpm(kp, td, ti, inc_t, v_max)
+        function obj = tpm(kp, ko, inc_t,v_max)
             obj.kp = kp;
             obj.kd = kp * td;
             obj.ki = kp/ti;
+            obj.ko = ko;
             obj.inc_t = inc_t;
             obj.u = [0, v_max];
             obj.a_error = zeros(1, 3);
             obj.v_max = v_max;
         end
 
-        function vel = getSpeed(obj, mistake)
+        function vel = getSpeed(obj, ed, eo)
 
             obj.a_error(3) = obj.a_error(2);
             obj.a_error(2) = obj.a_error(1);
