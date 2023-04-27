@@ -18,6 +18,10 @@ rate =10;
 kp = 1;
 ko = 0.5;
 v_max = 0.5;
+array_ang = [];
+error_eori = [];
+error_edist = [];
+
 
 %% DECLARACIÓN DE SUBSCRIBERS
 odom_sub = rossubscriber('/robot0/odom'); % Subscripción a la odometría
@@ -62,7 +66,10 @@ while (1)
     Eori = atan2((dist_laser - last_dist_laser), dist_avanzada);
     Edist = ((dist_laser + 0.105) * cos(Eori)) - D;
 
-    
+    error_eori = [error_eori, error_lineal];
+    error_edist = [error_edist, error_angular];
+
+    %% Almacenamos datos
     medidas(1,i)= dist_laser;
     medidas(2,i)= last_dist_laser; %% valor anterior de distancia
     medidas(3,i)= dist_avanzada;
@@ -72,6 +79,8 @@ while (1)
     %% Calculamos las consignas de velocidades
     consigna_vel_linear = 0.3;
     consigna_vel_ang = pid_w.getSpeed(Edist,Eori);
+
+    array_ang = [array_ang, consigna_vel_ang];
 
     %% Aplicamos consignas de control
     msg_vel.Linear.X= consigna_vel_linear;
@@ -99,8 +108,25 @@ end
 msg_vel.Linear.X = 0;
 msg_vel.Angular.Z = 0;
 
-
+%% Guardamos los datos
 save('medidas.mat','medidas');
+
+%% Ploteamos datos
+subplot(2, 1, 1);
+plot(array_lineal, "r")
+hold on;
+plot(array_ang, "b")
+xlabel("Tiempo")
+ylabel("Velocidad")
+legend('Velocidad lineal', 'Velocidad angular');
+
+subplot(2, 1, 2);
+plot(error_lin, "r")
+hold on;
+plot(error_angu, "b")
+xlabel("Tiempo")
+ylabel("Error")
+legend('Error lineal', 'Error angular');
 
 
 %% DESCONEXIÓN DE ROS
