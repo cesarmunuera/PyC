@@ -2,7 +2,7 @@
 rosshutdown;
 
 %% INICIALIZACIÓN DE ROS (COMPLETAR ESPACIOS CON LAS DIRECCIONES IP)
-setenv('ROS_MASTER_URI','http://172.29.29.63:11311');
+setenv('ROS_MASTER_URI','http://172.29.30.172:11311');
 setenv('ROS_IP','172.29.29.62');
 rosinit(); % Inicialización de ROS en la IP correspondiente
 
@@ -12,19 +12,22 @@ medidas = zeros(5,1000);
 
 %% Declaracion de nuestras variables
 rate =10;
-%valores guay -> kp1, ko0.5
-%valores mal -> kp0.5, k01, valores pequeños
-%valores regular -> valores grandes
 kp = 1;
 ko = 0.5;
 v_max = 0.5;
 
+%% Activamos los motores
+pub_motor = rospublisher('/cmd_motor_state', 'std_msgs/Int32');
+msg_motor = rosmessage(pub_motor);
+msg_motor.Data = 1;
+send(pub_motor,msg_motor);
+
 %% DECLARACIÓN DE SUBSCRIBERS
-odom_sub = rossubscriber('/robot0/odom'); % Subscripción a la odometría
-sonar0 = rossubscriber('/robot0/sonar_0', rostype.sensor_msgs_Range);
+odom_sub = rossubscriber('/pose'); % Subscripción a la odometría
+sonar0 = rossubscriber('/sonar_0', rostype.sensor_msgs_Range);
 
 %% DECLARACIÓN DE PUBLISHERS
-pub = rospublisher('/robot0/cmd_vel', 'geometry_msgs/Twist'); %
+pub = rospublisher('/cmd_vel', 'geometry_msgs/Twist'); 
 msg_vel=rosmessage(pub); %% Creamos un mensaje del tipo declarado en "pub" (geometry_msgs/Twist)
 msg_sonar0=rosmessage(sonar0);
 
