@@ -2,7 +2,7 @@
 rosshutdown;
 
 %% INICIALIZACIÓN DE ROS (COMPLETAR ESPACIOS CON LAS DIRECCIONES IP)
-setenv('ROS_MASTER_URI','http://192.168.1.16:11311');
+setenv('ROS_MASTER_URI','http://192.168.1.19:11311');
 setenv('ROS_IP','192.168.1.7');
 rosinit(); % Inicialización de ROS en la IP correspondiente
 
@@ -12,11 +12,8 @@ medidas = zeros(5,1000);
 
 %% Declaracion de nuestras variables
 rate =10;
-%valores guay -> kp1, ko0.5
-%valores mal -> kp0.5, k01, valores pequeños
-%valores regular -> valores grandes
-kp = 1;
-ko = 0.5;
+kp = 0.5;
+ko = 0.3;
 v_max = 0.5;
 array_ang = [];
 error_eori = [];
@@ -40,8 +37,9 @@ pid_w = tpm(kp, ko, v_max);
 
 %% Inicializamos variables para el control
 i = 0;
-D = 0.5;
-last_dist = 0;
+D = 2;
+last_dist_X = 0;
+last_dist_Y = 0;
 last_dist_laser = 0;
 
 %% Bucle de control
@@ -54,7 +52,7 @@ while (1)
     pos_X = odom.Pose.Pose.Position.X;
 
     %% Calculamos la distancia avanzada y medimos la distancia a la pared
-    dist_avanzada = pos_X - last_dist;
+    dist_avanzada = sqrt((pos_X - last_dist_X)^2 + (pos_Y - last_dist_Y)^2);
     dist_laser = msg_sonar0.Range_;
 
     if dist_laser>5
@@ -91,7 +89,8 @@ while (1)
 
     %% Actualizamos posiciones y distancias
     last_dist_laser = dist_laser;
-    last_dist = pos_X;
+    last_dist_X = pos_X;
+    last_dist_Y = pos_Y;
 
     %% Temporización del bucle según el parámetro establecido en r
     waitfor(r);
