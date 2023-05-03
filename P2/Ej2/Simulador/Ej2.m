@@ -12,9 +12,8 @@ medidas = zeros(5,1000);
 
 %% Declaracion de nuestras variables
 rate =10;
-kd = 0.5;
-ko = 0.3;
-v_max = 0.5;
+kd = 0.1;
+ko = 0.8;
 
 %% DECLARACIÓN DE SUBSCRIBERS
 odom_sub = rossubscriber('/robot0/odom'); % Subscripción a la odometría
@@ -30,18 +29,18 @@ r = robotics.Rate(rate);
 waitfor(r);
 
 %% Instanciacion de los objetos de la clase PID
-pid_w = tpm(kd, ko, v_max);
+pid_w = tpm(kd, ko);
 
 %% Inicializamos variables para el control
 i = 0;
-D = 2;
+D = 1.5;
 last_dist_X = 0;
 last_dist_Y = 0;
 last_dist_laser = 0;
 
 %% Bucle de control
 while (1)
-    i = i + 1
+    i = i + 1;
 
     %% Obtenemos la posición y medidas de sonar
     odom = receive(odom_sub, 10);
