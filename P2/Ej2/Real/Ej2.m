@@ -12,9 +12,8 @@ medidas = zeros(5,1000);
 
 %% Declaracion de nuestras variables
 rate =10;
-kp = 1;
-ko = 0.5;
-v_max = 0.5;
+kp = 0.1;
+ko = 0.8;
 
 %% Activamos los motores
 pub_motor = rospublisher('/cmd_motor_state', 'std_msgs/Int32');
@@ -41,8 +40,9 @@ pid_w = tpm(kp, ko, v_max);
 %% Inicializamos variables para el control
 i = 0;
 D = 0.5;
-last_dist = 0;
 last_dist_laser = 0;
+last_dist_Y = 0;
+last_dist_X = 0;
 
 %% Bucle de control
 while (1)
@@ -52,9 +52,10 @@ while (1)
     odom = receive(odom_sub, 10);
     msg_sonar0 = receive(sonar0);
     pos_X = odom.Pose.Pose.Position.X;
+    pos_Y = odom.Pose.Pose.Position.Y;
 
     %% Calculamos la distancia avanzada y medimos la distancia a la pared
-    dist_avanzada = pos_X - last_dist;
+    dist_avanzada = sqrt((pos_X - last_dist_X)^2 + (pos_Y - last_dist_Y)^2);
     dist_laser = msg_sonar0.Range_;
 
     if dist_laser>5
@@ -89,7 +90,8 @@ while (1)
 
     %% Actualizamos posiciones y distancias
     last_dist_laser = dist_laser;
-    last_dist = pos_X;
+    last_dist_X = pos_X;
+    last_dist_Y = pos_Y;
 
     %% Temporización del bucle según el parámetro establecido en r
     waitfor(r);
@@ -101,7 +103,7 @@ end
 %% Paramos ejecucion
 msg_vel.Linear.X = 0;
 msg_vel.Angular.Z = 0;
-
+send(pub,msg_vel);
 
 save('medidas.mat','medidas');
 
