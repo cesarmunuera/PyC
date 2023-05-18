@@ -19,12 +19,7 @@ msg_vel.Angular.Z=0.1;
 send(pub,msg_vel);
 laser1 = receive(laser_sub, 10);
 while (1)
-    odom = receive(odom_sub,10);
-    odom.Pose.Pose.Orientation
-    quaternion=[odom.Pose.Pose.Orientation.W odom.Pose.Pose.Orientation.X odom.Pose.Pose.Orientation.Y odom.Pose.Pose.Orientation.Z];
-    euler=quat2eul(quaternion,'ZYX');
-    % Guardamos en Theta el primer campo devuelto por la función de Euler
-    Theta=euler(1)
+
 end
 
 %% DESCONEXIÓN DE ROS

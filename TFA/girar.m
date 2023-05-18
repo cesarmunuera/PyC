@@ -1,52 +1,34 @@
-function girar(angulo,odom_sub,pub,msg_vel)
-pi_valor = round(pi, 4);
-while (1)
+function girar(giros, odom_sub, pub, msg)
+    %% Variables    
+    pi_valor = round(pi, 4);
+    dist = 0;
+    
+    %% Recogemos primeros valores
     odom = receive(odom_sub,10);
-    odom.Pose.Pose.Orientation
     quaternion=[odom.Pose.Pose.Orientation.W odom.Pose.Pose.Orientation.X odom.Pose.Pose.Orientation.Y odom.Pose.Pose.Orientation.Z];
     euler=quat2eul(quaternion,'ZYX');
     % Guardamos en Theta el primer campo devuelto por la función de Euler
-    Theta=euler(1);
-
-    if(Theta > 0)
-        msg_vel.Angular.Z = 0.5;
-        send(pub,msg_vel);
-        destino = Theta + angulo;
-        while(destino > Theta)
+    theta_original = abs(euler(1));
+    
+    %% Cuerpo
+    for i = giros
+        msg.Angular.Z = 0.5;
+        send(pub,msg);
+    
+        while(pi_valor/2 >= dist)
             odom = receive(odom_sub,10);
-            odom.Pose.Pose.Orientation
             quaternion=[odom.Pose.Pose.Orientation.W odom.Pose.Pose.Orientation.X odom.Pose.Pose.Orientation.Y odom.Pose.Pose.Orientation.Z];
             euler=quat2eul(quaternion,'ZYX');
             % Guardamos en Theta el primer campo devuelto por la función de Euler
-            Theta=euler(1);
-            if(Theta < 0 )
-                Theta = Theta + pi_valor * 2;
-            end
+            theta_actual=abs(euler(1));
+    
+            dist = abs(theta_actual - theta_original);
         end
-        msg_vel.Angular.Z = 0;
-        send(pub,msg_vel);
-    else
-        Theta = Theta + pi_valor * 2;
-        msg_vel.Angular.Z = 0.5;
-        send(pub,msg_vel);
-        destino = Theta + angulo;
-        while(destino > Theta)
-            odom = receive(odom_sub,10);
-            odom.Pose.Pose.Orientation
-            quaternion=[odom.Pose.Pose.Orientation.W odom.Pose.Pose.Orientation.X odom.Pose.Pose.Orientation.Y odom.Pose.Pose.Orientation.Z];
-            euler=quat2eul(quaternion,'ZYX');
-            % Guardamos en Theta el primer campo devuelto por la función de Euler
-            Theta=euler(1);
-            if(Theta > 0 )
-                Theta = Theta + pi_valor * 2;
-            end
-        end
+        
+        theta_original = theta_actual;
+        dist = 0;
     end
+
+    msg.Angular.Z = 0;
+    send(pub,msg);
 end
-
-
-
-
-
-end
-
