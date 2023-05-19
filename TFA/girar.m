@@ -14,7 +14,7 @@ function girar(giros, odom_sub, pub, msg_vel)
     send(pub,msg_vel);
     
     for i = 1:giros
-        while(1.55> dist)
+        while(1.55 > dist)
             odom = receive(odom_sub,10);
             quaternion=[odom.Pose.Pose.Orientation.W odom.Pose.Pose.Orientation.X odom.Pose.Pose.Orientation.Y odom.Pose.Pose.Orientation.Z];
             euler=quat2eul(quaternion,'ZYX');

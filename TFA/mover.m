@@ -35,23 +35,23 @@ function mover(codificacion_paredes, odom_sub, pub, msg_vel, id_nodo_anterior)
     
     elseif ( ...
             codificacion_paredes == 4 || ...
-            codificacion_paredes == 7 || ...
             codificacion_paredes == 9 || ...
-            codificacion_paredes == 14)
-        % Vamos para atras -> pi
-        girar(2, odom_sub, pub, msg_vel);
+            codificacion_paredes == 10 || ...
+            codificacion_paredes == 12)
         % Avanzamos 2 metros
         avanzar(odom_sub, pub, msg_vel);
     
     elseif ( ...
-            codificacion_paredes == 10 || ...
+            codificacion_paredes == 7 || ...
             codificacion_paredes == 13)
         % Vamos para abajo = derecha -> 3pi/2
         girar(3, odom_sub, pub, msg_vel);
         % Avanzamos 2 metros
         avanzar(odom_sub, pub, msg_vel);
     
-    elseif (codificacion_paredes == 12)
+    elseif (codificacion_paredes == 14)
+        % Vamos para atras -> pi
+        girar(2, odom_sub, pub, msg_vel);
         % Avanzamos 2 metros
         avanzar(odom_sub, pub, msg_vel);
     
