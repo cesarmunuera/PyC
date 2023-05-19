@@ -29,23 +29,22 @@ function Script1(odom_sub, laser_sub, sonar_sub0, sonar_sub5, pub, msg_vel)
         % Comprobamos que no se haya visitado el nodo previamente
         nodo_visitado = false;
         tam_mapa = numel(mapa_nodos)
-        if (tam_mapa > 1)
-            for i = 1:tam_mapa
-                valor = mapa_nodos(int32(i));
-                if (valor(1) == X_pos && valor(2) == Y_pos)
-                    nodo_visitado = true;
-                    id_nodo_actual = i;
-                end
+        if (nu)
+        for i = 1:numel(mapa_nodos)
+            valor = mapa_nodos(i);
+            if (valor(1) == X_pos && valor(2) == Y_pos)
+                nodo_visitado = true;
+                id_nodo_actual = i;
             end
         end
 
         % Si no se ha visitado, lo añadimos al mapa y al grafo
         if (~nodo_visitado)
             valor = [X_pos, Y_pos];
-            id_nodo_actual = numel(mapa_nodos);
+            id_nodo_actual = numel(mapa_nodos)+1;
 
             mapa_nodos(id_nodo_actual) = valor;
-            grafo = addnode(grafo, id_nodo_actual);
+            grafo.addnode(grafo, id_nodo_actual);
         end
         
         % Añadimos un vecino a un nodo existente, si no tenia a ese vecino
