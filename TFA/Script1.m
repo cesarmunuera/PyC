@@ -1,6 +1,6 @@
 function Script1(odom_sub, laser_sub, sonar_sub0, sonar_sub5, pub, msg_vel)
     %% Variables    
-    num_nodos = 25;
+    num_nodos = 26;
     id_nodo_anterior = 0;
     nodos_recorridos = 0;
     grafo = graph();
@@ -23,12 +23,12 @@ function Script1(odom_sub, laser_sub, sonar_sub0, sonar_sub5, pub, msg_vel)
 
         %% Comprobamos si ya hemos visitado el nodo
         % Obtenemos la posicion de x e y, sin decimales
-        X_pos = floor(X_pos + 0.5);
-        Y_pos= floor(Y_pos + 0.5);
+        X_pos = floor(X_pos + 0.5)
+        Y_pos= floor(Y_pos + 0.5)
         
         % Comprobamos que no se haya visitado el nodo previamente
         nodo_visitado = false;
-        tam_mapa = numel(mapa_nodos)
+        tam_mapa = numel(mapa_nodos);
         if (tam_mapa > 1)
             for i = 1:tam_mapa
                 valor = mapa_nodos(int32(i));
@@ -57,7 +57,7 @@ function Script1(odom_sub, laser_sub, sonar_sub0, sonar_sub5, pub, msg_vel)
 
         %% Movemos al robot
         % Miramos paredes que rodean al robot
-        paredes = obtener_paredes(array_laser, distancia_sonar_derecho, distancia_sonar_izquierdo);
+        paredes = obtener_paredes(array_laser, distancia_sonar_derecho, distancia_sonar_izquierdo)
 
         % Movemos al robot a la siguiente celda
         mover(paredes, odom_sub, pub, msg_vel, id_nodo_anterior);

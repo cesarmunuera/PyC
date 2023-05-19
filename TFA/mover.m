@@ -2,7 +2,7 @@ function mover(codificacion_paredes, odom_sub, pub, msg_vel, id_nodo_anterior)
     if(id_nodo_anterior > 0)
         switch codificacion_paredes
             case 0
-                codificacion_paredes = 3;
+                codificacion_paredes = 14;
             case 1
                 codificacion_paredes = 6;
             case 2
@@ -51,7 +51,7 @@ function mover(codificacion_paredes, odom_sub, pub, msg_vel, id_nodo_anterior)
         % Avanzamos 2 metros
         avanzar(odom_sub, pub, msg_vel);
     
-    elseif ( codificacion_paredes == 12)
+    elseif (codificacion_paredes == 12)
         % Avanzamos 2 metros
         avanzar(odom_sub, pub, msg_vel);
     

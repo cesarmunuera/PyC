@@ -2,7 +2,7 @@
 rosshutdown;
 
 %% INICIALIZACIÓN DE ROS (COMPLETAR ESPACIOS CON LAS DIRECCIONES IP)
-setenv('ROS_MASTER_URI','http://192.168.1.27:11311');
+setenv('ROS_MASTER_URI','http://192.168.1.28:11311');
 setenv('ROS_IP','192.168.1.7');
 rosinit(); 
 

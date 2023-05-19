@@ -13,7 +13,7 @@ function avanzar(odom_sub, pub, msg_vel)
     last_dist_X = pos_X;
     last_dist_Y = pos_Y;
     dist_actual = sqrt((pos_X - last_dist_X)^2 + (pos_Y - last_dist_Y)^2);
-    dist_a_recorrer = dist_actual + dist
+    dist_a_recorrer = dist_actual + dist;
 
     msg_vel.Linear.X = 0.8;
     send(pub, msg_vel);
@@ -23,7 +23,7 @@ function avanzar(odom_sub, pub, msg_vel)
          pos_X = odom.Pose.Pose.Position.X;
          pos_Y = odom.Pose.Pose.Position.Y;
          dist_actual = sqrt((pos_X - last_dist_X)^2 + (pos_Y - last_dist_Y)^2);
-         dist_acumulada = dist_acumulada + dist_actual
+         dist_acumulada = dist_acumulada + dist_actual;
 
          if(dist_a_recorrer -  dist_actual < 0.2)
              msg_vel.Linear.X = 0.2;
