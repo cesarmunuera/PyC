@@ -1,4 +1,4 @@
-function mover(codificacion_paredes)
+function mover(codificacion_paredes, odom_sub, pub, msg_vel)
     if (...
             codificacion_paredes == 0 || ...
             codificacion_paredes == 1 || ...
@@ -11,7 +11,7 @@ function mover(codificacion_paredes)
         % Giramos a la izquierda -> pi/2
         girar(1, odom_sub, pub, msg_vel);
         % Avanzamos 2 metros
-        avanzar(2, odom_sub, pub, msg_vel);
+        avanzar(odom_sub, pub, msg_vel);
     
     elseif ( ...
             codificacion_paredes == 4 || ...
@@ -21,7 +21,7 @@ function mover(codificacion_paredes)
         % Vamos para atras -> pi
         girar(2, odom_sub, pub, msg_vel);
         % Avanzamos 2 metros
-        avanzar(2, odom_sub, pub, msg_vel);
+        avanzar(odom_sub, pub, msg_vel);
     
     elseif ( ...
             codificacion_paredes == 10 || ...
@@ -29,11 +29,11 @@ function mover(codificacion_paredes)
         % Vamos para abajo = derecha -> 3pi/2
         girar(3, odom_sub, pub, msg_vel);
         % Avanzamos 2 metros
-        avanzar(2, odom_sub, pub, msg_vel);
+        avanzar(odom_sub, pub, msg_vel);
     
     elseif ( codificacion_paredes == 12)
         % Avanzamos 2 metros
-        avanzar(2, odom_sub, pub, msg_vel);
+        avanzar(odom_sub, pub, msg_vel);
     
     else
         % Estas en el caso 15 y no deberias estarlo

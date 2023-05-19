@@ -11,17 +11,19 @@ function codificacion_paredes = obtener_paredes(array_laser, distancia_sonar_der
 
   %% Primero obtenemos las paredes delanteras y traseras a partir del laser
   % Valores auxiliares
-  num_pared_izquierdatad_haces = length(array_laser) / 2;
+  mitad_haces = length(array_laser) / 2;
   num_haces = length(array_laser);
   tam_array = int32(num_haces / 24);
   
   %Obtenemos el array trasero
   array_trasero = reshape(array_laser(1:tam_array), 1, tam_array);
-  array_atras_aux = reshape(array_laser(num_haces - tam_array:num_pared_izquierdatad_haces), 1, tam_array);
+  array_atras_aux = reshape(array_laser(num_haces - tam_array:num_haces), 1, tam_array+1);
   array_trasero = horzcat(array_trasero, array_atras_aux);
   
   %Obtenemos el array delantero
-  array_delantero = reshape(array_laser(num_pared_izquierdatad_haces - num_haces:num_pared_izquierdatad_haces + num_haces), 1, tam_array*2);
+  inicio = mitad_haces - tam_array;
+  fin = mitad_haces + tam_array;
+  array_delantero = reshape(array_laser(inicio:fin), 1, (tam_array*2)+1);
   
   %% Vemos si el laser detecta pared
   tam_array = length(array_trasero);
@@ -55,6 +57,7 @@ function codificacion_paredes = obtener_paredes(array_laser, distancia_sonar_der
   if (distancia_sonar_izquierdo < dist)
     pared_izquierda = true;
   end
+
 
   %% Ahora procedemos a realizar la codificación -----------------------------
   if(~pared_izquierda && pared_delantera && ~pared_derecha && ~pared_trasera)
