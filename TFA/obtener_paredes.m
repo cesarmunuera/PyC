@@ -1,6 +1,6 @@
 function codificacion_paredes = obtener_paredes(array_laser, distancia_sonar_derecho, distancia_sonar_izquierdo)
   %% Variables
-  dist = 1.2;
+  dist = 1.3;
   contador_trasero = 0;
   contador_delantero = 0;
   pared_delantera = false;

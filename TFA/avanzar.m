@@ -26,7 +26,7 @@ function avanzar(odom_sub, pub, msg_vel)
          dist_acumulada = dist_acumulada + dist_actual;
 
          if(dist_a_recorrer -  dist_actual < 0.2)
-             msg_vel.Linear.X = 0.2;
+             msg_vel.Linear.X = 0.15;
              send(pub,msg_vel);
          end
          

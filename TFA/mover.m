@@ -1,26 +1,4 @@
 function mover(codificacion_paredes, odom_sub, pub, msg_vel, id_nodo_anterior)
-%     if(id_nodo_anterior > 0)
-%         switch codificacion_paredes
-%             case 0
-%                 codificacion_paredes = 14;
-%             case 1
-%                 codificacion_paredes = 6;
-%             case 2
-%                 codificacion_paredes = 8;
-%             case 4
-%                 codificacion_paredes = 10;
-%             case 5
-%                 codificacion_paredes = 11;
-%             case 7
-%                 codificacion_paredes = 13;
-%             case 9
-%                 codificacion_paredes = 12;
-%         end
-%     
-%     end
-%     
-
-    codificacion_paredes
     if (...
             codificacion_paredes == 1 || ...
             codificacion_paredes == 2 || ...

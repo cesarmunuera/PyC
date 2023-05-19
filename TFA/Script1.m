@@ -23,8 +23,8 @@ function Script1(odom_sub, laser_sub, sonar_sub0, sonar_sub5, pub, msg_vel)
 
         %% Comprobamos si ya hemos visitado el nodo
         % Obtenemos la posicion de x e y, sin decimales
-        X_pos = floor(X_pos + 0.5)
-        Y_pos= floor(Y_pos + 0.5)
+        X_pos = floor(X_pos + 0.5);
+        Y_pos= floor(Y_pos + 0.5);
         
         % Comprobamos que no se haya visitado el nodo previamente
         nodo_visitado = false;
@@ -46,18 +46,19 @@ function Script1(odom_sub, laser_sub, sonar_sub0, sonar_sub5, pub, msg_vel)
 
             mapa_nodos(id_nodo_actual) = valor;
             grafo = addnode(grafo, id_nodo_actual);
+            nodos_recorridos = nodos_recorridos + 1;
         end
         
         % Añadimos un vecino a un nodo existente, si no tenia a ese vecino
-        if(nodos_recorridos > 0)
-            if (~isneighbor(grafo, id_nodo_actual, id_nodo_anterior))
-                grafo = addedge(grafo, id_nodo_actual, id_nodo_anterior);
-            end
-        end
+%         if(nodos_recorridos > 0)
+%             if (~isneighbor(grafo, id_nodo_actual, id_nodo_anterior))
+%                 grafo = addedge(grafo, id_nodo_actual, id_nodo_anterior);
+%             end
+%         end
 
         %% Movemos al robot
         % Miramos paredes que rodean al robot
-        paredes = obtener_paredes(array_laser, distancia_sonar_derecho, distancia_sonar_izquierdo)
+        paredes = obtener_paredes(array_laser, distancia_sonar_derecho, distancia_sonar_izquierdo);
 
         % Movemos al robot a la siguiente celda
         mover(paredes, odom_sub, pub, msg_vel, id_nodo_anterior);
