@@ -1,4 +1,4 @@
-function error = girar(error_anterior, giros, odom_sub, pub, msg_vel)
+function girar(giros, odom_sub, pub, msg_vel)
     %% Variables    
     angulo_acumulado = 0;
     vel_max = 0.8;
@@ -29,9 +29,6 @@ function error = girar(error_anterior, giros, odom_sub, pub, msg_vel)
     send(pub,msg_vel);
     
     theta_anterior = theta_original;
-
-    angulo_a_recorrer = angulo_a_recorrer - error_anterior
-
     while(angulo_a_recorrer > angulo_acumulado)
         % Obtenemos el theta actual
         odom = receive(odom_sub,10);
@@ -42,7 +39,7 @@ function error = girar(error_anterior, giros, odom_sub, pub, msg_vel)
         % Calculamos cuanto se ha girado y se lo sumamos al giro
         % acumulado
         dist_dif = abs(theta_actual - theta_anterior);
-        angulo_acumulado = angulo_acumulado + dist_dif
+        angulo_acumulado = angulo_acumulado + dist_dif;
 
         if(angulo_acumulado >= angulo_a_recorrer - 0.15)
             msg_vel.Angular.Z = vel_min;
@@ -53,6 +50,4 @@ function error = girar(error_anterior, giros, odom_sub, pub, msg_vel)
 
     msg_vel.Angular.Z = 0;
     send(pub,msg_vel);
-
-    error = angulo_acumulado - angulo_a_recorrer;
 end

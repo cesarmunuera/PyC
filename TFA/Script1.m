@@ -1,6 +1,6 @@
-function [grafo, id_nodo_actual, nodo_salida] = Script1(odom_sub, laser_sub, sonar_sub0, sonar_sub5, pub, msg_vel)
+function [grafo, id_nodo_actual, nodo_salida, mapa_nodos] = Script1(odom_sub, laser_sub, sonar_sub0, sonar_sub5, pub, msg_vel)
     %% Variables    
-    num_nodos = 26;
+    num_nodos = 10;
     id_nodo_anterior = 0;
     nodos_recorridos = 0;
     error_lineal = 0;
@@ -72,7 +72,7 @@ function [grafo, id_nodo_actual, nodo_salida] = Script1(odom_sub, laser_sub, son
         end
 
         % Movemos al robot a la siguiente celda
-        [error_angular, error_lineal] = mover(error_angular, error_lineal, paredes, odom_sub, pub, msg_vel, laser_sub);
+        error_lineal = mover(error_lineal, paredes, odom_sub, pub, msg_vel, laser_sub);
 
         %% Actualizamos el ultimo nodo visitado
         id_nodo_anterior = id_nodo_actual;

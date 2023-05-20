@@ -14,7 +14,7 @@ function error = avanzar(error_anterior, odom_sub, pub, msg_vel, laser_sub)
     last_dist_X = pos_X;
     last_dist_Y = pos_Y;
     dist_actual = sqrt((pos_X - last_dist_X)^2 + (pos_Y - last_dist_Y)^2);
-    dist_a_recorrer = dist_actual + dist - error_anterior
+    dist_a_recorrer = dist_actual + dist - error_anterior;
 
     msg_vel.Linear.X = 0.9;
     send(pub, msg_vel);
@@ -24,7 +24,7 @@ function error = avanzar(error_anterior, odom_sub, pub, msg_vel, laser_sub)
          pos_X = odom.Pose.Pose.Position.X;
          pos_Y = odom.Pose.Pose.Position.Y;
          dist_actual = sqrt((pos_X - last_dist_X)^2 + (pos_Y - last_dist_Y)^2);
-         dist_acumulada = dist_acumulada + dist_actual
+         dist_acumulada = dist_acumulada + dist_actual;
 
          %% Obtenemos la distancia a la pared delantera, con el laser
          laser1 = receive(laser_sub, 10);

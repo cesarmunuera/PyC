@@ -1,4 +1,4 @@
-function [error_lineal, error_angular] = mover(error_angular_anterior, error_lineal_anterior, codificacion_paredes, odom_sub, pub, msg_vel, laser_sub)
+function error_lineal = mover(error_lineal_anterior, codificacion_paredes, odom_sub, pub, msg_vel, laser_sub)
     if (...
             codificacion_paredes == 1 || ...
             codificacion_paredes == 2 || ...
@@ -8,7 +8,7 @@ function [error_lineal, error_angular] = mover(error_angular_anterior, error_lin
             codificacion_paredes == 8 || ...
             codificacion_paredes == 11)
         % Giramos a la izquierda -> pi/2
-        error_angular = girar(error_angular_anterior, 1, odom_sub, pub, msg_vel);
+        girar(1, odom_sub, pub, msg_vel);
         % Avanzamos 2 metros
         error_lineal = avanzar(error_lineal_anterior, odom_sub, pub, msg_vel, laser_sub);
     
@@ -19,13 +19,12 @@ function [error_lineal, error_angular] = mover(error_angular_anterior, error_lin
             codificacion_paredes == 12)
         % Avanzamos 2 metros
         error_lineal = avanzar(error_lineal_anterior, odom_sub, pub, msg_vel, laser_sub);
-        error_angular = error_angular_anterior;
     
     elseif ( ...
             codificacion_paredes == 7 || ...
             codificacion_paredes == 13)
         % Vamos para abajo = derecha -> 3pi/2
-        error_angular = girar(-error_angular_anterior, 3, odom_sub, pub, msg_vel);
+         girar(3, odom_sub, pub, msg_vel);
         % Avanzamos 2 metros
         error_lineal = avanzar(error_lineal_anterior, odom_sub, pub, msg_vel, laser_sub);
     
@@ -33,7 +32,7 @@ function [error_lineal, error_angular] = mover(error_angular_anterior, error_lin
             codificacion_paredes == 0 || ...
             codificacion_paredes == 14)
         % Vamos para atras -> pi
-        error_angular = girar(error_angular_anterior, 2, odom_sub, pub, msg_vel);
+         girar(2, odom_sub, pub, msg_vel);
         % Avanzamos 2 metros
         error_lineal = avanzar(error_lineal_anterior, odom_sub, pub, msg_vel, laser_sub);
     
