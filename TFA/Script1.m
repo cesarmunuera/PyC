@@ -1,10 +1,13 @@
-function grafo = Script1(odom_sub, laser_sub, sonar_sub0, sonar_sub5, pub, msg_vel)
+function [grafo, id_nodo_actual, nodo_salida] = Script1(odom_sub, laser_sub, sonar_sub0, sonar_sub5, pub, msg_vel)
     %% Variables    
-    num_nodos = 5;
+    num_nodos = 26;
     id_nodo_anterior = 0;
     nodos_recorridos = 0;
-    grafo = graph();
+    error_lineal = 0;
+    error_angular = 0;
+    grafo = graph;
     mapa_nodos = containers.Map("KeyType", "int32", "ValueType", "any");
+
     %% Cuerpo del programa
     while(nodos_recorridos < num_nodos)
         % Recibimos datos de las subscripciones
@@ -38,38 +41,46 @@ function grafo = Script1(odom_sub, laser_sub, sonar_sub0, sonar_sub5, pub, msg_v
             end
         end
 
-        % Si no se ha visitado, lo añadimos al mapa y al grafo
+        % Si no se ha visitado, lo añadimos al mapa
         if (~nodo_visitado)
             valor = [X_pos, Y_pos];
             id_nodo_actual = mapa_nodos.Count + 1;
 
             mapa_nodos(id_nodo_actual) = valor;
-            grafo = addnode(grafo, id_nodo_actual);
-            num_nodos = numnodes(grafo)
-            nodos_recorridos = nodos_recorridos + 1
+            nodos_recorridos = nodos_recorridos + 1;
         end
         
-%         Añadimos un vecino a un nodo existente, si no tenia a ese vecino
+        % Añadimos un vecino a un nodo existente, si no tenia a ese vecino
         if(nodos_recorridos > 1)
-            vecinos = nearest(grafo,id_nodo_anterior,1);
-            vecino_registrado = ismember(id_nodo_actual,vecinos);
+            vecinos = nearest(grafo, id_nodo_anterior, 1);
+            vecino_registrado = ismember(id_nodo_actual, vecinos);
             if (~vecino_registrado)
                 grafo = addedge(grafo, id_nodo_actual, id_nodo_anterior);
+                %plot(grafo);
             end
+        else
+             grafo = addnode(grafo, id_nodo_actual);
         end
 
         %% Movemos al robot
         % Miramos paredes que rodean al robot
         paredes = obtener_paredes(array_laser, distancia_sonar_derecho, distancia_sonar_izquierdo);
 
+        % Almacenamos la id del nodo salida
+        if (paredes == 0)
+            nodo_salida = id_nodo_actual
+        end
+
         % Movemos al robot a la siguiente celda
-        mover(paredes, odom_sub, pub, msg_vel, id_nodo_anterior);
+        [error_angular, error_lineal] = mover(error_angular, error_lineal, paredes, odom_sub, pub, msg_vel, laser_sub);
 
         %% Actualizamos el ultimo nodo visitado
         id_nodo_anterior = id_nodo_actual;
+        % En la ultima iteracion, el nodo actual es el nodo donde ha
+        % quedado el robot
+
     end
     msg_vel.Linear.X = 0;
     send(pub, msg_vel);
-
 end
 

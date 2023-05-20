@@ -2,8 +2,8 @@
 rosshutdown;
 
 %% INICIALIZACIÓN DE ROS (COMPLETAR ESPACIOS CON LAS DIRECCIONES IP)
-setenv('ROS_MASTER_URI','http://192.168.1.140:11311');
-setenv('ROS_IP','192.168.1.15');
+setenv('ROS_MASTER_URI','http://192.168.1.28:11311');
+setenv('ROS_IP','192.168.1.7');
 rosinit(); 
 
 %% DECLARACIÓN DE SUBSCRIBERS
@@ -19,7 +19,7 @@ pub = rospublisher('/robot0/cmd_vel', 'geometry_msgs/Twist');
 msg_vel=rosmessage(pub); 
 
 %% Ejecucion principal del programa
-Script1(odom_sub, laser_sub, sonar_sub0, sonar_sub5, pub, msg_vel);
+[grafo, nodo_inicio, nodo_fin] = Script1(odom_sub, laser_sub, sonar_sub0, sonar_sub5, pub, msg_vel);
 
 
 %% DESCONEXIÓN DE ROS
