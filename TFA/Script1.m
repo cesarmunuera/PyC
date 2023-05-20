@@ -1,11 +1,10 @@
-function Script1(odom_sub, laser_sub, sonar_sub0, sonar_sub5, pub, msg_vel)
+function grafo = Script1(odom_sub, laser_sub, sonar_sub0, sonar_sub5, pub, msg_vel)
     %% Variables    
-    num_nodos = 26;
+    num_nodos = 5;
     id_nodo_anterior = 0;
     nodos_recorridos = 0;
     grafo = graph();
     mapa_nodos = containers.Map("KeyType", "int32", "ValueType", "any");
-
     %% Cuerpo del programa
     while(nodos_recorridos < num_nodos)
         % Recibimos datos de las subscripciones
@@ -28,10 +27,10 @@ function Script1(odom_sub, laser_sub, sonar_sub0, sonar_sub5, pub, msg_vel)
         
         % Comprobamos que no se haya visitado el nodo previamente
         nodo_visitado = false;
-        tam_mapa = numel(mapa_nodos);
-        if (tam_mapa > 1)
+        tam_mapa = mapa_nodos.Count;
+        if (tam_mapa > 0)
             for i = 1:tam_mapa
-                valor = mapa_nodos(int32(i));
+                valor = mapa_nodos(i);
                 if (valor(1) == X_pos && valor(2) == Y_pos)
                     nodo_visitado = true;
                     id_nodo_actual = i;
@@ -42,19 +41,22 @@ function Script1(odom_sub, laser_sub, sonar_sub0, sonar_sub5, pub, msg_vel)
         % Si no se ha visitado, lo añadimos al mapa y al grafo
         if (~nodo_visitado)
             valor = [X_pos, Y_pos];
-            id_nodo_actual = numel(mapa_nodos);
+            id_nodo_actual = mapa_nodos.Count + 1;
 
             mapa_nodos(id_nodo_actual) = valor;
             grafo = addnode(grafo, id_nodo_actual);
-            nodos_recorridos = nodos_recorridos + 1;
+            num_nodos = numnodes(grafo)
+            nodos_recorridos = nodos_recorridos + 1
         end
         
-        % Añadimos un vecino a un nodo existente, si no tenia a ese vecino
-%         if(nodos_recorridos > 0)
-%             if (~isneighbor(grafo, id_nodo_actual, id_nodo_anterior))
-%                 grafo = addedge(grafo, id_nodo_actual, id_nodo_anterior);
-%             end
-%         end
+%         Añadimos un vecino a un nodo existente, si no tenia a ese vecino
+        if(nodos_recorridos > 1)
+            vecinos = nearest(grafo,id_nodo_anterior,1);
+            vecino_registrado = ismember(id_nodo_actual,vecinos);
+            if (~vecino_registrado)
+                grafo = addedge(grafo, id_nodo_actual, id_nodo_anterior);
+            end
+        end
 
         %% Movemos al robot
         % Miramos paredes que rodean al robot
@@ -66,6 +68,8 @@ function Script1(odom_sub, laser_sub, sonar_sub0, sonar_sub5, pub, msg_vel)
         %% Actualizamos el ultimo nodo visitado
         id_nodo_anterior = id_nodo_actual;
     end
+    msg_vel.Linear.X = 0;
+    send(pub, msg_vel);
 
 end
 

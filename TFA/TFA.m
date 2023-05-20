@@ -19,9 +19,8 @@ pub = rospublisher('/robot0/cmd_vel', 'geometry_msgs/Twist');
 msg_vel=rosmessage(pub); 
 
 %% Ejecucion principal del programa
-while (1)
-    Script1(odom_sub, laser_sub, sonar_sub0, sonar_sub5, pub, msg_vel);
-end
+Script1(odom_sub, laser_sub, sonar_sub0, sonar_sub5, pub, msg_vel);
+
 
 %% DESCONEXIÓN DE ROS
 rosshutdown;

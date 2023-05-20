@@ -15,7 +15,7 @@ function avanzar(odom_sub, pub, msg_vel)
     dist_actual = sqrt((pos_X - last_dist_X)^2 + (pos_Y - last_dist_Y)^2);
     dist_a_recorrer = dist_actual + dist;
 
-    msg_vel.Linear.X = 0.8;
+    msg_vel.Linear.X = 0.9;
     send(pub, msg_vel);
 
     while(dist_acumulada < dist_a_recorrer)
@@ -25,8 +25,13 @@ function avanzar(odom_sub, pub, msg_vel)
          dist_actual = sqrt((pos_X - last_dist_X)^2 + (pos_Y - last_dist_Y)^2);
          dist_acumulada = dist_acumulada + dist_actual;
 
-         if(dist_a_recorrer -  dist_actual < 0.2)
-             msg_vel.Linear.X = 0.15;
+%          if(dist_a_recorrer -  dist_actual < 0.2)
+%              msg_vel.Linear.X = 0.05;
+%              send(pub,msg_vel);
+%          end
+
+         if(dist_acumulada >= 1.9)
+             msg_vel.Linear.X = 0.05;
              send(pub,msg_vel);
          end
          
