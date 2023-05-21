@@ -1,14 +1,32 @@
-function mover_PID(array_posiciones, odom_sub, pub, msg_vel)
-%% Variables
-Xp = array_posiciones(1);
-Yp = array_posiciones(2);
+%% DESCONEXIÓN DE ROS
+rosshutdown;
+
+%% INICIALIZACIÓN DE ROS (COMPLETAR ESPACIOS CON LAS DIRECCIONES IP)
+setenv('ROS_MASTER_URI','http://192.168.1.28:11311');
+setenv('ROS_IP','192.168.1.7');
+rosinit() % Inicialización de ROS en la IP correspondiente
+
+%% DECLARACIÓN DE VARIABLES NECESARIAS PARA EL CONTROL
+Xp = 6;
+Yp = 12;
 v_max = 1;
 w_max = 1;
 kp = 10;
 td = 0.3;
 ti = 6;
 rate = 10;
+array_lineal = [];
+array_ang = [];
+error_lin = [];
+error_angu = [];
 control_giro = true;
+
+%% DECLARACIÓN DE SUBSCRIBERS
+odom_sub = rossubscriber('/robot0/odom'); % Subscripción a la odometría
+
+%% DECLARACIÓN DE PUBLISHERS
+pub = rospublisher('/robot0/cmd_vel', 'geometry_msgs/Twist'); %
+msg_vel=rosmessage(pub); %% Creamos un mensaje del tipo declarado en "pub" (geometry_msgs/Twist)
 
 %% Definimos la perodicidad del bucle (10 hz)
 r = robotics.Rate(rate);
@@ -34,14 +52,21 @@ while (1)
     yaw=yaw(1);
 
     %% Calculamos el error de distancia
-    error_lineal = sqrt(((X-Xp)^2)+((Y-Yp)^2))
+    error_lineal = sqrt(((X-Xp)^2)+((Y-Yp)^2));
 
     %% Calculamos el error de orientación
-    error_angular = atan2((Yp-Y),(Xp-X))-yaw
+    error_angular = atan2((Yp-Y),(Xp-X))-yaw;
+
+    error_lin = [error_lin, error_lineal];
+    error_angu = [error_angu, error_angular];
 
     %% Calculamos las consignas de velocidades
     consigna_vel_linear = pid_v.getSpeed(error_lineal);
     consigna_vel_ang = pid_w.getSpeed(error_angular);
+
+    array_lineal = [array_lineal, consigna_vel_linear];
+    array_ang = [array_ang, consigna_vel_ang];
+
 
     %% Comienza el control
     % El robot tiene bien la posicion y orientacion
@@ -67,3 +92,23 @@ while (1)
     % Temporización del bucle según el parámetro establecido en r
     waitfor(r);
 end
+
+
+% subplot(2, 1, 1);
+% plot(array_lineal, "r")
+% hold on;
+% plot(array_ang, "b")
+% xlabel("Tiempo")
+% ylabel("Velocidad")
+% legend('Velocidad lineal', 'Velocidad angular');
+% 
+% subplot(2, 1, 2);
+% plot(error_lin, "r")
+% hold on;
+% plot(error_angu, "b")
+% xlabel("Tiempo")
+% ylabel("Error")
+% legend('Error lineal', 'Error angular');
+
+%% DESCONEXIÓN DE ROS
+rosshutdown;

@@ -4,7 +4,12 @@ function girar(giros, odom_sub, pub, msg_vel)
     vel_max = 0.8;
     vel_min = 0.05;
     angulo_a_recorrer = 1.5707;
-    
+    rate = 10;
+
+    %% Definimos la perodicidad del bucle (10 hz)
+    r = robotics.Rate(rate);
+    waitfor(r);
+
     %% Recogemos primeros valores
     odom = receive(odom_sub,10);
     quaternion=[odom.Pose.Pose.Orientation.W odom.Pose.Pose.Orientation.X odom.Pose.Pose.Orientation.Y odom.Pose.Pose.Orientation.Z];
@@ -46,6 +51,9 @@ function girar(giros, odom_sub, pub, msg_vel)
             send(pub,msg_vel);
         end
         theta_anterior = theta_actual;
+
+        % Temporización del bucle según el parámetro establecido en r
+        waitfor(r);
     end
 
     msg_vel.Angular.Z = 0;

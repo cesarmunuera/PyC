@@ -1,11 +1,13 @@
 function error = avanzar(error_anterior, odom_sub, pub, msg_vel, laser_sub)
-    % Esta funcion simplemente mueve el robot 2 metros hacia delante, hacia la
-    % siguiente casilla
-
     %% Variables
     dist = 2;
     dist_acumulada = 0;
     contador_delantero = 0;
+    rate = 10;
+
+    %% Definimos la perodicidad del bucle (10 hz)
+    r = robotics.Rate(rate);
+    waitfor(r);
 
     %% Cuerpo del programa
     odom = receive(odom_sub,10);
@@ -59,6 +61,8 @@ function error = avanzar(error_anterior, odom_sub, pub, msg_vel, laser_sub)
          last_dist_X = pos_X;
          last_dist_Y = pos_Y;
 
+         % Temporización del bucle según el parámetro establecido en r
+         waitfor(r);
     end
 
     msg_vel.Linear.X = 0;

@@ -1,6 +1,6 @@
 function [grafo, id_nodo_actual, nodo_salida, mapa_nodos] = Script1(odom_sub, laser_sub, sonar_sub0, sonar_sub5, pub, msg_vel)
     %% Variables    
-    num_nodos = 10;
+    num_nodos = 26;
     id_nodo_anterior = 0;
     nodos_recorridos = 0;
     error_lineal = 0;
