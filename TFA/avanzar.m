@@ -18,7 +18,7 @@ function error = avanzar(error_anterior, odom_sub, pub, msg_vel, laser_sub)
     dist_actual = sqrt((pos_X - last_dist_X)^2 + (pos_Y - last_dist_Y)^2);
     dist_a_recorrer = dist_actual + dist - error_anterior;
 
-    msg_vel.Linear.X = 0.9;
+    msg_vel.Linear.X = 1;
     send(pub, msg_vel);
 
     while(dist_acumulada < dist_a_recorrer)
@@ -54,7 +54,7 @@ function error = avanzar(error_anterior, odom_sub, pub, msg_vel, laser_sub)
 
          %% Frenamos al robot cuando se acerque a la distancia deseada
          if(dist_acumulada >= 1.91)
-             msg_vel.Linear.X = 0.05;
+             msg_vel.Linear.X = 0.45;
              send(pub,msg_vel);
          end
          

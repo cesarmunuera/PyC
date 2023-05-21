@@ -1,7 +1,7 @@
 function girar(giros, odom_sub, pub, msg_vel)
     %% Variables    
     angulo_acumulado = 0;
-    vel_max = 0.8;
+    vel_max = 0.9;
     vel_min = 0.05;
     angulo_a_recorrer = 1.5707;
     rate = 10;
