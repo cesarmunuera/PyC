@@ -1,4 +1,12 @@
 function [grafo, id_nodo_actual, nodo_salida, mapa_nodos] = Script1(odom_sub, laser_sub, sonar_sub0, sonar_sub5, pub, msg_vel)
+    %% Descripcion
+    % Es la escructura del script1, donde se llaman al resto de funciones,
+    % o estas llaman al resto.
+    % Funcionara mientras que no se hayan recorrido todos los nodos.
+    % Primero nos guardamos el nodo en el que estamos y lo conectamos con
+    % el anterior, en caso de no estar registrado. Tanto en un mapa como en
+    % el grafo. Luego lo desplazamos a la siguiente casilla.
+
     %% Variables    
     num_nodos = 26;
     id_nodo_anterior = 0;

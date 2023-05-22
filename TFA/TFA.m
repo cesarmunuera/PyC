@@ -1,3 +1,8 @@
+%% Descripción
+% Archivo del que cuelga el resto. En concreto, los dos scripts. Se generan
+% las coneciones con el robot, y se las pasamos como parametro.
+% Lo que es retornado por el script1, se le pasa como parametro al script2.
+
 %% DESCONEXIÓN DE ROS
 rosshutdown;
 
@@ -19,10 +24,8 @@ pub = rospublisher('/robot0/cmd_vel', 'geometry_msgs/Twist');
 msg_vel=rosmessage(pub); 
 
 %% Ejecucion principal del programa
-tic
 [grafo, nodo_inicio, nodo_fin, mapa_nodos] = Script1(odom_sub, laser_sub, sonar_sub0, sonar_sub5, pub, msg_vel);
 Script2(odom_sub, pub, msg_vel, grafo, nodo_inicio, nodo_fin, mapa_nodos);
-toc/60
 
 %% DESCONEXIÓN DE ROS
 rosshutdown;

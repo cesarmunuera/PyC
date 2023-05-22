@@ -1,4 +1,9 @@
 function error = avanzar(error_anterior, odom_sub, pub, msg_vel, laser_sub)
+    %% Descripciion: 
+    % Esto es una fucnion que mueve el robot 2m. Tiene 2 elementos de
+    % parada. El primero es la distancia que acumula al andar, que debe ser
+    % 2m. Por otro lado, tambien se parara si detecta pared a 1m.
+
     %% Variables
     dist = 2;
     dist_acumulada = 0;
@@ -10,6 +15,8 @@ function error = avanzar(error_anterior, odom_sub, pub, msg_vel, laser_sub)
     waitfor(r);
 
     %% Cuerpo del programa
+
+    % Obtenemos distancias para sacar errores
     odom = receive(odom_sub,10);
     pos_X = odom.Pose.Pose.Position.X;
     pos_Y = odom.Pose.Pose.Position.Y;
@@ -21,6 +28,7 @@ function error = avanzar(error_anterior, odom_sub, pub, msg_vel, laser_sub)
     msg_vel.Linear.X = 1;
     send(pub, msg_vel);
 
+    % Control de parada
     while(dist_acumulada < dist_a_recorrer)
          odom = receive(odom_sub,10);
          pos_X = odom.Pose.Pose.Position.X;
@@ -29,6 +37,7 @@ function error = avanzar(error_anterior, odom_sub, pub, msg_vel, laser_sub)
          dist_acumulada = dist_acumulada + dist_actual;
 
          %% Obtenemos la distancia a la pared delantera, con el laser
+         % Esto es igual que en obtener_paredes.m
          laser1 = receive(laser_sub, 10);
          array_laser = laser1.Ranges;
 
@@ -65,6 +74,7 @@ function error = avanzar(error_anterior, odom_sub, pub, msg_vel, laser_sub)
          waitfor(r);
     end
 
+    % Paramos al robot
     msg_vel.Linear.X = 0;
     send(pub, msg_vel);
 

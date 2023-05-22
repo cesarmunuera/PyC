@@ -1,4 +1,11 @@
 function error_lineal = mover(error_lineal_anterior, codificacion_paredes, odom_sub, pub, msg_vel, laser_sub)
+    %% Descripcion
+    % Esta funcion usa la codificacion de paredes, e implementa el
+    % algoritmo de la mano izquierda. Por lo que separamos las distintas
+    % posibilidades, para girar los correspondientes radianes.
+
+    %% Cuerpo del programa
+    % Izquierda
     if (...
             codificacion_paredes == 1 || ...
             codificacion_paredes == 2 || ...
@@ -12,6 +19,7 @@ function error_lineal = mover(error_lineal_anterior, codificacion_paredes, odom_
         % Avanzamos 2 metros
         error_lineal = avanzar(error_lineal_anterior, odom_sub, pub, msg_vel, laser_sub);
     
+    % Recto
     elseif ( ...
             codificacion_paredes == 4 || ...
             codificacion_paredes == 9 || ...
@@ -20,6 +28,7 @@ function error_lineal = mover(error_lineal_anterior, codificacion_paredes, odom_
         % Avanzamos 2 metros
         error_lineal = avanzar(error_lineal_anterior, odom_sub, pub, msg_vel, laser_sub);
     
+    % Derecha
     elseif ( ...
             codificacion_paredes == 7 || ...
             codificacion_paredes == 13)
@@ -27,7 +36,8 @@ function error_lineal = mover(error_lineal_anterior, codificacion_paredes, odom_
          girar(3, odom_sub, pub, msg_vel);
         % Avanzamos 2 metros
         error_lineal = avanzar(error_lineal_anterior, odom_sub, pub, msg_vel, laser_sub);
-    
+
+    % Para atras
     elseif ( ...
             codificacion_paredes == 0 || ...
             codificacion_paredes == 14)

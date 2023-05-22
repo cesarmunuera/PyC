@@ -1,4 +1,7 @@
 classdef tpm
+    %% Descripcion
+    % Esta clase es el controlador. Ha sido reutilizada de la practica 2,
+    % apartado 1. Se implementa un PID.
     properties
         kp
         kd
@@ -52,8 +55,7 @@ classdef tpm
             if (obj.u(1) < -obj.v_max)
                 vel = -obj.v_max;
             end
-
-
+            
         end
     end
 end

@@ -1,4 +1,13 @@
 function girar(giros, odom_sub, pub, msg_vel)
+    %% Decripcion:
+    % Esta fucnion es la encargada de girar el robot, en funcion de las
+    % necesidades (algoritmo con obtener_paredes.m). Cuando se llama a esta
+    % funcion, se sabe a donde se tiene que girar, aqui no se decide el
+    % giro. 
+    % Se usa la acumulacion del giro para parar. Hay 3 casos. Si se tiene
+    % que girar a la izquierda pi/2, a la izquierda pi, o a la derecha
+    % pi/2, pero con velocidad negativa.
+
     %% Variables    
     angulo_acumulado = 0;
     vel_max = 0.9;
@@ -29,7 +38,7 @@ function girar(giros, odom_sub, pub, msg_vel)
         angulo_a_recorrer = round(pi, 4);
     end
 
-    %% Cuerpo
+    %% Cuerpo del pograma principal
     msg_vel.Angular.Z = vel_max;
     send(pub,msg_vel);
     
@@ -41,11 +50,12 @@ function girar(giros, odom_sub, pub, msg_vel)
         euler=quat2eul(quaternion,'ZYX');
         theta_actual=abs(euler(1));
 
-        % Calculamos cuanto se ha girado y se lo sumamos al giro
-        % acumulado
+        % Calculamos cuanto se ha girado y se lo sumamos al giro acumulado
         dist_dif = abs(theta_actual - theta_anterior);
         angulo_acumulado = angulo_acumulado + dist_dif;
 
+        % Si estamos cerca de llegar al angulo previsto, bajamos la
+        % velocidad para que no nos pasemos.
         if(angulo_acumulado >= angulo_a_recorrer - 0.15)
             msg_vel.Angular.Z = vel_min;
             send(pub,msg_vel);
